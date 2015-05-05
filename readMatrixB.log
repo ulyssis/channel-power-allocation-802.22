@@ -1,0 +1,15 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=mex 2011.4.5)  26 APR 2015 17:33
+entering extended mode
+ %&-line parsing enabled.
+**readMatrixB.cpp
+(./readMatrixB.cpp
+This is MeX  Version 1.05  18 XII 1993  (B. Jackowski & M. Ry\'cko)
+! You can't use `macro parameter character #' in vertical mode.
+l.1 #
+     include<mex.h>
+? 
+! You can't use `macro parameter character #' in horizontal mode.
+l.2 #
+     include <stdlib.h>
+? x
+No pages of output.
