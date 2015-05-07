@@ -31,12 +31,12 @@ echo off;
 clc;
 
 runtimes =  1 ;  % number of simulation run
-    n = 10;    % number of WBS
-    c = 3;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    n = 16;    % number of WBS
+    c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
-    SUcellRadius = 7000; % the radius of WRAN cell 3
+    SUcellRadius = 7000; % the radius of circle for quasiSINR
     infBound = 1*10.^(-7);     % The interfernce threshold on PU contour    
 %     infBound = 2*10.^(-7);     % The interfernce threshold on PU contour
     TVpower = 0;    
