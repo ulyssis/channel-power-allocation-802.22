@@ -97,26 +97,23 @@ figure(4+plotTag*10);
 % pdf of throughput of end uers
 figure(5+plotTag*10); 
 % Base 2 logarithm
-SINR_ETs_random_container = 6*(1e+6)*log2(1.+SINR_ETs_random_container);
+SINR_ETs_random_container = 6*(1e+6)*log2(1.+SINR_ETs_random_container)
         h1cvx = cdfplot(SINR_ETs_random_container);
         set(h1cvx, 'color','k', 'linestyle', ':');
         hold on
         
-SINR_ETs_whitecat_container = 6*(1e+6)*log2(1.+SINR_ETs_whitecat_container);
         h2cvx = cdfplot(SINR_ETs_whitecat_container);
         set(h2cvx, 'color','g', 'linestyle', '-.');
         hold on
-
-SINR_ETs_whitecase_container = 6*(1e+6)*log2(1.+SINR_ETs_whitecase_container);        
+        
         h3cvx = cdfplot(SINR_ETs_whitecase_container);
         set(h3cvx, 'color', 'k', 'linestyle', '-.' ); % 'marker', '.'
         hold on
-
-sinr_ETs_lindo_container = 6*(1e+6)*log2(1.+sinr_ETs_lindo_container);           
+        
         h4cvx = cdfplot(sinr_ETs_lindo_container);
         set(h4cvx,'color','r',  'linestyle', '-');
        
-SINR_ETs_noregret_container = 6*(1e+6)*log2(1.+SINR_ETs_noregret_container); 
+
         h5cvx = cdfplot(SINR_ETs_noregret_container);
         set(h5cvx,'color','b',  'linestyle', '--');    
         axis([1 100 0 1]);
@@ -136,8 +133,8 @@ SINR_ETs_noregret_container = 6*(1e+6)*log2(1.+SINR_ETs_noregret_container);
         legend('Random', 'WhiteCat','WhiteCase', 'Lindo', 'Noregret learning');
 %         title('Cumulative distribution of SINR on end terminals for different distributed schemes');
    
-        xlabel('bits/s');
-%         ylabel('CDF')
+        xlabel('SINR (dB)');
+        ylabel('CDF')
         
         
         

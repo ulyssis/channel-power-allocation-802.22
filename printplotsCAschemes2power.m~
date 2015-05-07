@@ -184,18 +184,6 @@ SINR_ETs_noregret2 = 6*(1e+6)*log2(1.+SINR_ETs_noregret2);
 %    set (gcf,'Position',[232 246 560 300]); % size of plot
 %    set(gca, 'Position', [.13 .17 .80 .74]); % the percentage of X, Y axis in the plot
     set(gca, 'XScale', 'log');
-    
-    
-        % multiplication
-        a=[cellstr(num2str(get(gca, 'ytick')'*100))];
-        % create a vector of '%' signs
-        pct = char(ones(size(a,1),1)*'%');
-        % append the '%' signs after the percentage values
-        new_yticks =[char(a), pct];
-        % reflect the changes on the plot
-        set(gca, 'yticklabel', new_yticks);
-        
-        
     legend('LP-random', 'LP-whiteCat','LP-whiteCase',  'LP-optimization','LP-noregretLearning', 'CVX-random', 'CVX-whiteCat','CVX-whiteCase',  'CVX-optimization','CVX-noregret', 'Location', 'southeast');
 %, 'EdgeColor', 'W'
 % legend('boxoff');
@@ -203,8 +191,8 @@ SINR_ETs_noregret2 = 6*(1e+6)*log2(1.+SINR_ETs_noregret2);
 
     title('Cumulative distribution of throughput on end terminals for different distributed schemes');
    
-    xlabel('bits/s');
-%     ylabel('X 100%')
+    xlabel('SINR (dB)');
+    ylabel('X 100%')
     magnify;
 
     

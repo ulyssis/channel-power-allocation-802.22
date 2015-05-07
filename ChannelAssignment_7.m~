@@ -329,7 +329,7 @@ end
 %%%           mex readMatrixB.cpp
 %%%           mex readMatrixB_jointPowerChannelAllocation.cpp
 %%%-------power consumption, qusai SINR, and sinr on terminals.
-plotTag = SUcellRadius/1000;
+plotTag = 0;
          printplots5schemes(plotTag, n, utilityHistory, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_noregret_container);
 
         %printPerformanceETs5(SINR_ETs_random, SINR_ETs_whitecat, SINR_ETs_whitecase, SINR_ETs_lindo, SINR_ETs_noregret, fair_random_container, fair_cat_container, fair_case_container, fair_lindo, fair_noregret_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, fair_lindo, worstSINR_noregret_container);

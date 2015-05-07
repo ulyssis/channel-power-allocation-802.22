@@ -109,18 +109,18 @@ seq = randperm(n);
         end
         dlmwrite('/home/li/work/tools/lindo/lindoapi/samples/c/dica/NoisePowerRatio.txt', NoisePowerRatioInOneRow, ' ');
         
-        %--------The input parameters for Lindo is ready --------%
-        % joint power and channel allocation, with lindo
-         readMatrixB_jointPowerChannelAllocation(); % call lindo in .c file, to run a script to intriger lindo
-         pause(3); % wait for 1s for the result to be written.
-
-% if load('resolve') ==1, which indicates lindo returns 'good' results for joint channel-power allocation          
-flag_resolve = load('flag_resolve');
-
-
-matrixB_vriablePower = load('matrixB_vriablePower');
-matrixP_vriablePower = load('matrixP_vriablePower');
-         B_lindoCAPA= matrixB_vriablePower.*matrixP_vriablePower;
+% % %         %--------The input parameters for Lindo is ready --------%
+% % %         % joint power and channel allocation, with lindo
+% % %          readMatrixB_jointPowerChannelAllocation(); % call lindo in .c file, to run a script to intriger lindo
+% % %          pause(3); % wait for 1s for the result to be written.
+% % % 
+% % % % if load('resolve') ==1, which indicates lindo returns 'good' results for joint channel-power allocation          
+% % % flag_resolve = load('flag_resolve');
+% % % 
+% % % 
+% % % matrixB_vriablePower = load('matrixB_vriablePower');
+% % % matrixP_vriablePower = load('matrixP_vriablePower');
+% % %          B_lindoCAPA= matrixB_vriablePower.*matrixP_vriablePower;
         
         
 %         % % % % % % % % % % % % % % % % % % % % % % %

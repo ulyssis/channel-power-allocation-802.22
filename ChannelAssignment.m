@@ -31,8 +31,8 @@ echo off;
 clc;
 
 runtimes =  10 ;  % number of simulation run
-    n = 5;    % number of WBS
-    c = 2;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    n = 16;    % number of WBS
+    c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -155,11 +155,10 @@ SINR_ETs_LindoCAPA_container_pa=[];
 
 
 
-
+for SUcellRadius = 1000:1000:7000
 
 for run = 1: runtimes % the number of simulations
-        %   % LP and CVX are feasible
-        % find feasible locations to apply LP and CVX
+        %   % make sure that both LP and CVX are feasible
         linprogWork = -2;
         max_cvx_statusMsg =2;
         while (linprogWork <= 0 && max_cvx_statusMsg > 1)
@@ -172,17 +171,17 @@ for run = 1: runtimes % the number of simulations
         lp_container = [lp_container, lp];
 
         
-%     %  %---------- LP ---------------    
-%     %   decide the maximal transmission power by solving the Linear problem with matlab.
-%     %   'while' loop is used to generate solution feasible topologies  
-%     
-%         linprogWork = -2;
-%         while (linprogWork <= 0)
-%             [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
-%             [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
-%         end
-%             lp = sum(P_LP,2);
-%             lp_container = [lp_container, lp];
+    %  %---------- LP ---------------    
+    %   decide the maximal transmission power by solving the Linear problem with matlab.
+    %   'while' loop is used to generate solution feasible topologies  
+    
+        linprogWork = -2;
+        while (linprogWork <= 0)
+            [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
+            [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
+        end
+            lp = sum(P_LP,2);
+            lp_container = [lp_container, lp];
 
     %   %---------- cvx ---------------
     %    decide the maximal transmission power by solving the convex problem with cvx 
@@ -313,6 +312,20 @@ for run = 1: runtimes % the number of simulations
             SINR_ETs_lindo_container2, SINR_ETs_lindo2_container2, SINR_ETs_noregret_container2, SINR_ETs_PotentialGame_container2, fair_random_container2, fair_cat_container2, fair_case_container2, fair_lindo_container2, fair_noregret_container2, fair_PotentialGame_container2, worstSINR_random_container2, worstSINR_cat_container2, worstSINR_case_container2, worstSINR_lindo_container2, worstSINR_noregret_container2, worstSINR_PotentialGame_container2, convergenceStepWhitecat2, convergenceStepWhitecase2, convergenceStepNoregret2, convergenceStepPotentialGame2, SINRvarianceWhitecat_container2, SINRvarianceWhitecase_container2, SINRvarianceNoregret_container2, SINRvariancePotentialGame_container);
 end
 
+plotLog = SUcellRadius/1000;
+% %%%%%----channel allocation schemes, two power formulations   ------------
+%         % plots of the 4 schemes under two kinds of power decision.
+        printplotsCAschemes2power(plotLog, n, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_noregret_container, SINR_ETs_lindo_container, powerHistory2, averageSinrHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, SINR_ETs_noregret_container2, SINR_ETs_lindo_container2);        
+        printplotsWorst20_CAschemes2power(plotLog, n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_lindo_container2);
+        
+%         % plot figures for only maximal power decision
+%         worst20(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container);
+%         worst20(n, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_lindo_container2);
+
+
+
+end
+
 %%%-------This function generates obsolete plot--------
 % %       the runSchemes function should add "snrRatio_random, snrRatio_dica,
 % %       snrRatio_self, snrRatio_noregret" to the end of its output
@@ -348,14 +361,6 @@ end
 
 
         
-% %%%%%----channel allocation schemes, two power formulations   ------------
-%         % plots of the 4 schemes under two kinds of power decision.
-        printplotsCAschemes2power(n, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_noregret_container, SINR_ETs_lindo_container, powerHistory2, averageSinrHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, SINR_ETs_noregret_container2, SINR_ETs_lindo_container2);        
-        printplotsWorst20_CAschemes2power(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_lindo_container2);
-        
-%         % plot figures for only maximal power decision
-%         worst20(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container);
-%         worst20(n, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_lindo_container2);
 
 
 % %         % Record the sum of utility in the converging
