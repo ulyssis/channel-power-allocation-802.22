@@ -121,7 +121,6 @@ seq = randperm(n);
 % % % matrixB_vriablePower = load('matrixB_vriablePower');
 % % % matrixP_vriablePower = load('matrixP_vriablePower');
 % % %          B_lindoCAPA= matrixB_vriablePower.*matrixP_vriablePower;
-B_lindoCAPA = [];
         
         
 %         % % % % % % % % % % % % % % % % % % % % % % %
