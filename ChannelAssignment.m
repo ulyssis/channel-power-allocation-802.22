@@ -30,7 +30,7 @@ close all;
 echo off;
 clc;
 
-runtimes =  50 ;  % number of simulation run
+runtimes =  2 ;  % number of simulation run
     n = 16;    % number of WBS
     c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
@@ -53,7 +53,7 @@ runtimes =  50 ;  % number of simulation run
     
     
     
-for SUcellRadius = 1000:1000:7000
+for SUcellRadius = 1000:1000:2000% 1000:1000:7000
         
         
 utilityHistory=[];
