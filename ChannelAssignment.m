@@ -50,6 +50,12 @@ runtimes =  50 ;  % number of simulation run
 
     tic;
 
+    
+    
+    
+for SUcellRadius = 1000:1000:7000
+        
+        
 utilityHistory=[];
 powerHistory=[];      % record thress items in 10 runs of simulation
 averageSinrHistory = [];
@@ -155,7 +161,7 @@ SINR_ETs_LindoCAPA_container_pa=[];
 
 
 
-for SUcellRadius = 1000:1000:7000
+
 
 for run = 1: runtimes % the number of simulations
         %   % make sure that both LP and CVX are feasible
@@ -312,7 +318,7 @@ for run = 1: runtimes % the number of simulations
             SINR_ETs_lindo_container2, SINR_ETs_lindo2_container2, SINR_ETs_noregret_container2, SINR_ETs_PotentialGame_container2, fair_random_container2, fair_cat_container2, fair_case_container2, fair_lindo_container2, fair_noregret_container2, fair_PotentialGame_container2, worstSINR_random_container2, worstSINR_cat_container2, worstSINR_case_container2, worstSINR_lindo_container2, worstSINR_noregret_container2, worstSINR_PotentialGame_container2, convergenceStepWhitecat2, convergenceStepWhitecase2, convergenceStepNoregret2, convergenceStepPotentialGame2, SINRvarianceWhitecat_container2, SINRvarianceWhitecase_container2, SINRvarianceNoregret_container2, SINRvariancePotentialGame_container);
 end
 
-plotLog = SUcellRadius/1000;
+plotLog = SUcellRadius/100;
 % %%%%%----channel allocation schemes, two power formulations   ------------
 %         % plots of the 4 schemes under two kinds of power decision.
         printplotsCAschemes2power(plotLog, n, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_noregret_container, SINR_ETs_lindo_container, powerHistory2, averageSinrHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, SINR_ETs_noregret_container2, SINR_ETs_lindo_container2);        
