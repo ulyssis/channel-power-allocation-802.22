@@ -54,9 +54,9 @@ seq = randperm(n);
 
         %%        
         %---------------------------------------------
-        %         parameters input for Lindo
+        %         parameters input for OPT solver
         %---------------------------------------------
-        %---- store Gtilde into file
+        % store Gtilde into file
         GtildeInOneRow=[];
         for i=1:n
             GtildeInOneRow = [GtildeInOneRow,Gtilde(i, :)];
@@ -65,7 +65,7 @@ seq = randperm(n);
 
         %---- store powerRatio into file
         a=[];
-        condenseP=zeros(n, c);  % P-->condenseP which is n x c
+        condenseP=zeros(n, c);  % P-->condenseP which is n x c: p_i^k, i\in N, k\in C
         for i= 1:n
             condenseP(i,:) = sum(P( (i-1)*c+1 : i*c, :), 2);
             a = [a, condenseP(i,:)]; % finaly get (nc x 1) matrix
@@ -77,20 +77,38 @@ seq = randperm(n);
         %save('/home/li/work/tools/lindo/lindoapi/samples/c/dica/power.txt', a, '-double');
         pause(1);
         
-        
-%         condenseP=zeros(n, c);  % P-->condenseP which is n x c
-%         for i= 1:n
-%             condenseP(i,:) = sum(P( (i-1)*c+1 : i*c, :), 2);
-%         end
+       
         
         % generate compounded num_constants for lindoapi
         % h_{i,j}*p_{j,k}/p_{i,k}
         compoundMatrix = [];
         compoundMatrixInOneRow = [];
-        % demoninator:
+        % the compoundMatrix is a nn x c matrix.
+        % 
+        % p_i^k, i\in N, k\in C
+        % ./
+        % p_1^k, k\in C 
+        % .* 
+        % h_{1, i}, i\in N                 nxc
+        % ----------------------
+        % p_i^k, i\in N, k\in C
+        % ./
+        % p_2^k, k\in C
+        % .* 
+        % h_{2, i}, i\in N                 nxc
+        % ----------------------
+        % .
+        % .
+        % .
+        % ----------------------
+        % p_i^k, i\in N, k\in C
+        % ./
+        % p_n^k, k\in C
+        % .* 
+        % h_{n, i}, i\in N                 nxc
+  
         for i=1:n
-            newpart = condenseP./(ones(n, 1)*condenseP(i, :)); % a complete power matrix for all nodes / one powermatrix of one node
-            %newpart = newpart.*(Gtilde(i, :)'*ones(1, c))./(SUcellRadius^(-pathlossfactor)); % multiply the passloss between any pair.
+            newpart = condenseP./(ones(n, 1)*condenseP(i, :)); % a complete power matrix for all nodes ./ one powermatrix of one node
             newpart = newpart.*(Gtilde(i, :)'*ones(1, c)); % multiply the passloss between any pair.            
             compoundMatrix = [compoundMatrix; newpart];
         end
