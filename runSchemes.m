@@ -61,7 +61,7 @@ seq = randperm(n);
         for i=1:n
             GtildeInOneRow = [GtildeInOneRow,Gtilde(i, :)];
         end
-        dlmwrite('/home/li/work/tools/lindo/lindoapi/samples/c/dica/Gtilde.txt', GtildeInOneRow, ' ');
+        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/Gtilde.txt', GtildeInOneRow, ' ');
 
         %---- store powerRatio into file
         a=[];
@@ -73,7 +73,7 @@ seq = randperm(n);
         % put two additional constant in the end of the powers
         a=[a, delta]; % add noise 'delta'
         %a=[a, 1/(SUcellRadius^pathlossfactor)];    % signalfade 
-        dlmwrite('/home/li/work/tools/lindo/lindoapi/samples/c/dica/maxPermittedPower.txt', a, ' ');
+        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/maxPermittedPower.txt', a, ' ');
         %save('/home/li/work/tools/lindo/lindoapi/samples/c/dica/power.txt', a, '-double');
         pause(1);
         
@@ -97,7 +97,7 @@ seq = randperm(n);
         for i=1:n*n
             compoundMatrixInOneRow = [compoundMatrixInOneRow, compoundMatrix(i, :)]; 
         end
-        dlmwrite('/home/li/work/tools/lindo/lindoapi/samples/c/dica/compoundCoefficient.txt', compoundMatrixInOneRow, ' ');
+        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/compoundCoefficient.txt', compoundMatrixInOneRow, ' ');
         
         % generate compounded num_constants for lindoapi
         % N_0/p_{i,k}
@@ -107,7 +107,7 @@ seq = randperm(n);
         for i=1:n
             NoisePowerRatioInOneRow = [NoisePowerRatioInOneRow, NoisePowerRatio(i, :)];
         end
-        dlmwrite('/home/li/work/tools/lindo/lindoapi/samples/c/dica/NoisePowerRatio.txt', NoisePowerRatioInOneRow, ' ');
+        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/NoisePowerRatio.txt', NoisePowerRatioInOneRow, ' ');
         
 % % %         %--------The input parameters for Lindo is ready --------%
 % % %         % joint power and channel allocation, with lindo
