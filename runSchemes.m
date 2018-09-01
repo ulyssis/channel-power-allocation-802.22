@@ -1,5 +1,5 @@
        
-function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_lindo, B_noregret, B_PotentialGame, B_lindoCAPA, flag_resolve] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container)
+function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_lindo, B_noregret, B_PotentialGame] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container)
 %function [powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, fair_random_container, fair_cat_container, fair_case_container, fair_noregret_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, snrRatio_random, snrRatio_dica, snrRatio_self, snrRatio_noregret] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, fair_random_container, fair_cat_container, fair_case_container, fair_noregret_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container)
 
 
@@ -54,7 +54,7 @@ seq = randperm(n);
 
         %%        
         %---------------------------------------------
-        %         parameters input for OPT solver
+        %         parameters input for gurobi solver
         %---------------------------------------------
         % store Gtilde into file
         GtildeInOneRow=[];
@@ -77,95 +77,72 @@ seq = randperm(n);
         %save('/home/li/work/tools/lindo/lindoapi/samples/c/dica/power.txt', a, '-double');
         pause(1);
         
-       
-        
-        % generate compounded num_constants for lindoapi
-        % h_{i,j}*p_{j,k}/p_{i,k}
-        compoundMatrix = [];
-        compoundMatrixInOneRow = [];
-        % the compoundMatrix is a nn x c matrix.
-        % 
-        % p_i^k, i\in N, k\in C
-        % ./
-        % p_1^k, k\in C 
-        % .* 
-        % h_{1, i}, i\in N                 nxc
-        % ----------------------
-        % p_i^k, i\in N, k\in C
-        % ./
-        % p_2^k, k\in C
-        % .* 
-        % h_{2, i}, i\in N                 nxc
-        % ----------------------
-        % .
-        % .
-        % .
-        % ----------------------
-        % p_i^k, i\in N, k\in C
-        % ./
-        % p_n^k, k\in C
-        % .* 
-        % h_{n, i}, i\in N                 nxc
-  
-        for i=1:n
-            newpart = condenseP./(ones(n, 1)*condenseP(i, :)); % a complete power matrix for all nodes ./ one powermatrix of one node
-            newpart = newpart.*(Gtilde(i, :)'*ones(1, c)); % multiply the passloss between any pair.            
-            compoundMatrix = [compoundMatrix; newpart];
+       % X:
+       % x1 x2 x3 ... xn    x1 x2 x3 ... xn     x1 x2 x3 ... xn
+       % ----channel 1--    ---channel 2---     ----channel 3-- 
+        % model.Q
+        % h_{i,j}*z_{i,j}*p_{j,k}/p_{i,k}
+        % h_{i,j}*z_{i,j} is element of Gtilde.
+
+        arrayH = zeros(n, n);
+        arrayH = repmat (arrayH, c);
+        for i = 1: c
+            newpart_nominator = ones(n, 1) * condenseP(:, i)';
+            newpart_dominator = condenseP(:, i) * ones(1, n);
+            newpart = newpart_nominator./newpart_dominator;
+            newpart = newpart.*Gtilde;
+            arrayH(1+(i-1)*n : i*n, 1+(i-1)*n : i*n) = newpart;
         end
-        for i=1:n*n
-            compoundMatrixInOneRow = [compoundMatrixInOneRow, compoundMatrix(i, :)]; 
-        end
-        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/compoundCoefficient.txt', compoundMatrixInOneRow, ' ');
+        arrayH = arrayH - arrayH.*eye(n*c);
+
+        dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/arrayH.txt', arrayH, ' ');
         
-        % generate compounded num_constants for lindoapi
+        % model.obj
         % N_0/p_{i,k}
         %NoisePowerRatio = delta./(condenseP*SUcellRadius^(-pathlossfactor));
         NoisePowerRatio = delta./(condenseP);
         NoisePowerRatioInOneRow =[];
-        for i=1:n
-            NoisePowerRatioInOneRow = [NoisePowerRatioInOneRow, NoisePowerRatio(i, :)];
+        for i=1:c
+            NoisePowerRatioInOneRow = [NoisePowerRatioInOneRow, NoisePowerRatio(:, i)'];
         end
         dlmwrite('/Users/max/Documents/git_li/channel-power-allocation-802.22/generated_data/NoisePowerRatio.txt', NoisePowerRatioInOneRow, ' ');
         
-% % %         %--------The input parameters for Lindo is ready --------%
-% % %         % joint power and channel allocation, with lindo
-% % %          readMatrixB_jointPowerChannelAllocation(); % call lindo in .c file, to run a script to intriger lindo
-% % %          pause(3); % wait for 1s for the result to be written.
-% % % 
-% % % % if load('resolve') ==1, which indicates lindo returns 'good' results for joint channel-power allocation          
-% % % flag_resolve = load('flag_resolve');
-% % % 
-% % % 
-% % % matrixB_vriablePower = load('matrixB_vriablePower');
-% % % matrixP_vriablePower = load('matrixP_vriablePower');
-% % %          B_lindoCAPA= matrixB_vriablePower.*matrixP_vriablePower;
-B_lindoCAPA = [];
-        
-        
-%         % % % % % % % % % % % % % % % % % % % % % % %
-%         %   Partial Optimality
-%         %   stop here, input Q from Lindo !
-%         % % % % % % % % % % % % % % % % % % % % % % %
-%         B = condenseP.*Q;
-%         Blindo = B;
-%         [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
-%         lindo_Perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
-% 
-%         SINR_ETs_lindo = []; % there should be n*nET values
-% %         SINR_ETs_lindo = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
-%         [SINR_ETs_lindo, worstSINR_lindo, fair_lindo] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
-%         SINR_ETs_lindo_container = [SINR_ETs_lindo_container, SINR_ETs_lindo];
-%         disp('snrRatio_lindo');
-%         snrRatio_lindo = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);     % output quai SINR of all users
+        % model.A
+        % n x (n*c)
+        % n = 4, c = 2
+        % 1 0 0 0 1 0 0 0
+        % 0 1 0 0 0 1 0 0
+        % 0 0 1 0 0 0 1 0
+        % 0 0 0 1 0 0 0 1
+        A = [];
+        for i= 1:n
+            row = zeros(1, n*c);
+            for j = 1:c
+             row(i + (j-1)*n ) = 1;
+            end
 
-       
+            A = [A; row];
+        end
+
+
+        optimizaionModel1.Q = sparse(arrayH);
+        optimizaionModel1.A = sparse(A);
+        optimizaionModel1.obj = NoisePowerRatioInOneRow;
+        optimizaionModel1.rhs = ones(1, n);
+        optimizaionModel1.sense = '=';
+        gurobi_write(optimizaionModel1, 'optimizaionModel1.lp');
+        optimizaionModel1.vtype = 'B';
+        opt1Results = gurobi(optimizaionModel1);
         
-        % % % % % % % % % % % % % % % % % % % % % % %
-        %   Global Optimality
-        %   stop here, input B from Lindo !
-        % % % % % % % % % % % % % % % % % % % % % % %
-        readMatrixB(); % call lindo in .c file, to run a script to intriger lindo
-        B= condenseP.*load('matrixB');
+        assignin('base', 'results', opt1Results);
+        resultX = zeros(n, c);
+        reversedResultX = zeros(c, n);
+        for i=1:c
+            reversedResultX(i, :) = opt1Results.x((i-1)*n+1 : i*n);
+        end
+        resultX = reversedResultX';
+        B= resultX.*condenseP;
+
         [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
         lindo_Perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
 
