@@ -14,10 +14,13 @@
 
 % to use cvx:
 % cd /home/li/work/tools/cvx/
+% or 
+% cd /Users/max/Documents/git_li/channel-power-allocation-802.22/cvx
 % cvx_setup
 
 % to use gurobi
 % cd /home/li/work/gurobi/gurobi602/linux64/matlab
+% or /Library/gurobi801/mac64/matlab
 % gurobi_setup
 
 % if lindo is called, the following step is needed to automize the running.
@@ -29,17 +32,18 @@
 close all;
 echo off;
 clc;
+addpath("/Users/max/Documents/git_li/channel-power-allocation-802.22/cvx");
+addpath("/Library/gurobi801/mac64/matlab");
 
-runtimes =  2 ;  % number of simulation run
-    n = 3;    % number of WBS
-    c = 2;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+runtimes =  5 ;  % number of simulation run
+    n = 16;    % number of WBS
+    c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
     SUcellRadius = 7000; % the radius of WRAN cell 3
     infBound = 1*10.^(-7);     % The interfernce threshold on PU contour    
-%     infBound = 2*10.^(-7);     % The interfernce threshold on PU contour
-    TVpower = 0;    
+    TVpower = 0;
     pathlossfactor = 2;    
     miniP = 4; % 36dbm, the minmum power for users
     maxP = 40; % 46dbm
@@ -53,7 +57,7 @@ runtimes =  2 ;  % number of simulation run
     
     
     
-for SUcellRadius = 1000:1000:7000% 1000:1000:7000
+for SUcellRadius = 4000:1000:4000% 1000:1000:7000
         
         
 utilityHistory=[];
@@ -164,32 +168,32 @@ SINR_ETs_LindoCAPA_container_pa=[];
 
 
 for run = 1: runtimes % the number of simulations
-        %   % make sure that both LP and CVX are feasible
-        linprogWork = -2;
-        max_cvx_statusMsg =2;
-        while (linprogWork <= 0 && max_cvx_statusMsg > 1)
-            [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
-            [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
-            [P_CVX, max_cvx_statusMsg] = maximalPowerPlanningCVX(n, m, infBound, GtildeAll, miniP, maxP);
-        end
-        
-        lp = sum(P_LP,2);
-        lp_container = [lp_container, lp];
+%         %% make sure that both LP and CVX are feasible
+%         linprogWork = -2;
+%         max_cvx_statusMsg =2;
+%         while (linprogWork <= 0 && max_cvx_statusMsg > 1)
+%             [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
+%             [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
+%             [P_CVX, max_cvx_statusMsg] = maximalPowerPlanningCVX(n, m, infBound, GtildeAll, miniP, maxP);
+%         end
+%         
+%         lp = sum(P_LP,2);
+%         lp_container = [lp_container, lp];
 
         
-    %  %---------- LP ---------------    
+    %%---------- LP ---------------    
     %   decide the maximal transmission power by solving the Linear problem with matlab.
     %   'while' loop is used to generate solution feasible topologies  
     
-        linprogWork = -2;
-        while (linprogWork <= 0)
-            [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
-            [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
-        end
-            lp = sum(P_LP,2);
-            lp_container = [lp_container, lp];
+%         linprogWork = -2;
+%         while (linprogWork <= 0)
+%             [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
+%             [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
+%         end
+%             lp = sum(P_LP,2);
+%             lp_container = [lp_container, lp];
 
-    %   %---------- cvx ---------------
+    %%---------- cvx ---------------
     %    decide the maximal transmission power by solving the convex problem with cvx 
     %    while loop is used to generate solution feasible topologies
         max_cvx_statusMsg =2;
@@ -208,28 +212,18 @@ for run = 1: runtimes % the number of simulations
 
 %%%% run channel assignment schemes
         [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-            SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
+            SINR_ETs_lindo_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
             B_random, B_cat, B_case, B_lindo, B_noregret, B_PotentialGame] ...
             = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-            SINR_ETs_lindo_container, SINR_ETs_lindo2_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container);
-        
-        
-
-%% plot figures for the performances after power allocation
-[utilityHistory2, powerHistory2, averageSinrHistory2, averageStdHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, ...
-            SINR_ETs_lindo_container2, SINR_ETs_lindo2_container2, SINR_ETs_noregret_container2, SINR_ETs_PotentialGame_container2, fair_random_container2, fair_cat_container2, fair_case_container2, fair_lindo_container2, fair_noregret_container2, fair_PotentialGame_container2, worstSINR_random_container2, worstSINR_cat_container2, worstSINR_case_container2, worstSINR_lindo_container2, worstSINR_noregret_container2, worstSINR_PotentialGame_container2, convergenceStepWhitecat2, convergenceStepWhitecase2, convergenceStepNoregret2, convergenceStepPotentialGame2, SINRvarianceWhitecat_container2, SINRvarianceWhitecase_container2, SINRvarianceNoregret_container2, SINRvariancePotentialGame_container2, ...
-            B_random2, B_cat2, B_case2, B_lindo2, B_noregret2, B_PotentialGame2, B_lindoCAPA2] ...%snrRatio_random, snrRatio_dica, snrRatio_self, snrRatio_noregret]... % to help function printplots4schemes
-            = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory2, powerHistory2, ...
-            averageSinrHistory2, averageStdHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, ...
-            SINR_ETs_lindo_container2, SINR_ETs_lindo2_container2, SINR_ETs_noregret_container2, SINR_ETs_PotentialGame_container2, fair_random_container2, fair_cat_container2, fair_case_container2, fair_lindo_container2, fair_noregret_container2, fair_PotentialGame_container2, worstSINR_random_container2, worstSINR_cat_container2, worstSINR_case_container2, worstSINR_lindo_container2, worstSINR_noregret_container2, worstSINR_PotentialGame_container2, convergenceStepWhitecat2, convergenceStepWhitecase2, convergenceStepNoregret2, convergenceStepPotentialGame2, SINRvarianceWhitecat_container2, SINRvarianceWhitecase_container2, SINRvarianceNoregret_container2, SINRvariancePotentialGame_container);
+            SINR_ETs_lindo_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container);
 end
 
 plotLog = SUcellRadius/100;
-% %%%%%----channel allocation schemes, two power formulations   ------------
-%         % plots of the 4 schemes under two kinds of power decision.
-        printplotsCAschemes2power(plotLog, n, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_noregret_container, SINR_ETs_lindo_container, powerHistory2, averageSinrHistory2, SINR_ETs_random_container2, SINR_ETs_whitecat_container2, SINR_ETs_whitecase_container2, SINR_ETs_noregret_container2, SINR_ETs_lindo_container2);        
-        printplotsWorst20_CAschemes2power(plotLog, n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_lindo_container2);
+
+%% plot schemes
+        printplotsCAschemes2power(plotLog, n, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container);        
+%         printplotsWorst20_CAschemes2power(plotLog, n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container);
         
 %         % plot figures for only maximal power decision
 %         worst20(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_lindo_container);
@@ -238,34 +232,6 @@ plotLog = SUcellRadius/100;
 
 
 end
-
-%%%-------This function generates obsolete plot--------
-% %       the runSchemes function should add "snrRatio_random, snrRatio_dica,
-% %       snrRatio_self, snrRatio_noregret" to the end of its output
-% %       parameters
-%          printplots4schemes(powerHistory, averageSinrHistory, averageStdHistory, snrRatio_random, snrRatio_dica, snrRatio_self, snrRatio_noregret);
-%%%-------This function generates obsolete plot--------
-
-
-
-% %%%-------plots: joint channel and power allocation -----------
-% %%% Running 5 schemes requires results form Lindo, we call the c++ program
-% %%% from matlab:
-% %%%           mex –setup   % choose complier
-% %%%           mex readMatrixB.cpp
-% %%%           mex readMatrixB_jointPowerChannelAllocation.cpp
-% %%%-------power consumption, qusai SINR, and sinr on terminals.
-% plotTag = 0;
-%          printplots5schemes(plotTag, n, utilityHistory, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_noregret_container);
-% 
-%         %printPerformanceETs5(SINR_ETs_random, SINR_ETs_whitecat, SINR_ETs_whitecase, SINR_ETs_lindo, SINR_ETs_noregret, fair_random_container, fair_cat_container, fair_case_container, fair_lindo, fair_noregret_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, fair_lindo, worstSINR_noregret_container);
-% %         printplots5schemes(powerHistory, averageSinrHistory);
-% 
-% % plots after power allocation
-% % 5 schemes + 2 joint schemes
-% plotTag = plotTag+1;
-%          printplots7schemes(plotTag, n, utilityHistory_pa, powerHistory_pa, averageSinrHistory_pa, SINR_ETs_random_container_pa, SINR_ETs_whitecat_container_pa, SINR_ETs_whitecase_container_pa, SINR_ETs_lindo_container_pa, SINR_ETs_noregret_container_pa, SINR_ETs_PotentialGame_container_pa, SINR_ETs_LindoCAPA_container_pa);
-
 
 
 

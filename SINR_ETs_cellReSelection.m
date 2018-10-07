@@ -1,4 +1,4 @@
-function [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, Gtilde, nET, TVpower, delta)
+function [SINRofETs, averageSINR, error, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, Gtilde, nET, TVpower, delta)
     
     inf_ET_SU = Gtilde(1:n*nET, n*nET+1:n*nET+n).*(ones(n*nET,1)*sum(B, 2)'); % n*nET x n, the power received from every SU
     [V, I] = max(inf_ET_SU'); % I stores the indices of the PU for each ET, which transmits the biggest power to that ET. cell selection!
@@ -17,6 +17,8 @@ function [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, Gtild
     
     SINRofETs = sort(SINRofETs);
     worstSINR = mean(SINRofETs(1:size(SINRofETs,2)/5));
+    averageSINR = mean(SINRofETs);
+    error = 1.96*std(SINRofETs,1,2)'/sqrt(n);
     
     
     

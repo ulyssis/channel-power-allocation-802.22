@@ -149,13 +149,18 @@ else
 		handles.legend = [];
 	end
 	
-	% Plot erros
-	for i = 1:numbars
-		x =get(get(handles.bars(i),'children'), 'xdata');
-		x = mean(x([1 3],:));
-		handles.errors(i) = errorbar(x, barvalues(:,i), errors(:,i), 'k', 'linestyle', 'none', 'linewidth', 2);
-		ymax = max([ymax; barvalues(:,i)+errors(:,i)]);
-	end
+
+ % Plot erros
+ for i = 1:numbars
+   if ~verLessThan('matlab', '8.4') % HG2
+     x =  handles.bars(i).XData + handles.bars(i).XOffset;
+   else
+     x =get(get(handles.bars(i),'children'), 'xdata');
+     x = mean(x([1 3],:));
+   end
+   handles.errors(i) = errorbar(x, barvalues(:,i), errors(:,i), 'k', 'linestyle', 'none', 'linewidth', 2);
+   ymax = max([ymax; barvalues(:,i)+errors(:,i)]);
+end
 	
 	if error_sides == 1
 		set(gca,'children', flipud(get(gca,'children')));

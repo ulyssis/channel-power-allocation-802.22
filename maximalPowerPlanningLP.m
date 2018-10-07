@@ -28,7 +28,8 @@ returnValue = zeros(c, 1);
         f = -ones(1, n);  % goal is to minmize f'*x, f is a negative coefficient, so minmization becomes maxmazition.
         A = GtildeAll(n+channel, 1:n); % coefficients
         
-        % linprog(f,A,b) solves min f'*x such that A*x ≤ b.
+        % linprog(f,A,b) solves min  f'*x 
+        %                       s.t. A*x ≤ b
         [pMax(:, channel), fval, exitflag] = linprog(f, A, infBound, [], [], lb, up);
         returnValue(channel) = exitflag;
         % pMax --> P
