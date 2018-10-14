@@ -1,9 +1,9 @@
        
-function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_lindo, B_noregret, B_PotentialGame] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_lindo_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_lindo_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_lindo_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container)
+function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container)
 
 
 seq = randperm(n);
-   %% random
+   %% random channel allocation
    
         % Initialize channels asignment randomly
         B = zeros(n, c);
@@ -42,21 +42,21 @@ seq = randperm(n);
 
         
         
-%         %---------------------------|
-%         %         optimation: joint power and channel allocation
-%         %         objective function is quadratic
-%         %         constraints are linear
-%         %---------------------------|
+%         %---------------------------------------------------------%
+%         %         optimation: joint power and channel allocation  %
+%         %         objective function is quadratic                 %
+%         %         constraints are linear                          %
+%         %---------------------------------------------------------%
 %         % optimization:
 % %                 channelUsage = x(1: n*c);
 % %         powerLevelFinal = x(n*c+1: 2*n*c);
 %         minPower = 4;
-%         [channelUsage, powerLevelFinal] = jointPowerChannelAlloc_gurobi(n, c, P, Gtilde, delta, minPower);
+%         [channelUsage, powerLevelFinal] = jointPowerChannelAlloc_GUROBI(n, c, P, Gtilde, delta, minPower);
 
 
-        %%        
+        %%
         %---------------------------------------------
-        %         optimization by gurobi
+        %         optimization by GUROBI
         %---------------------------------------------
         % store Gtilde into file
         GtildeInOneRow=[];
@@ -120,7 +120,7 @@ seq = randperm(n);
         for i= 1:n
             row = zeros(1, n*c);
             for j = 1:c
-             row(i + (j-1)*n ) = 1;
+                row(i + (j-1)*n ) = 1;
             end
 
             A = [A; row];
@@ -135,10 +135,10 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         optimizaionModel1.A = sparse(A);
         optimizaionModel1.rhs = ones(1, n);
         optimizaionModel1.sense = '=';
-        %gurobi_write(optimizaionModel1, 'optimizaionModel1.lp');
+        %GUROBI_write(optimizaionModel1, 'optimizaionModel1.lp');
         optimizaionModel1.vtype = 'B';
         %optimizaionModel1.modelsense = 'min';
-        opt1Results = gurobi(optimizaionModel1);
+        opt1Results = GUROBI(optimizaionModel1);
         
         %assignin('base', 'results', opt1Results);
         resultX = zeros(n, c);
@@ -152,17 +152,17 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
         GUROBI_Perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
 
-        SINR_ETs_lindo = []; % there should be n*nET values
-%         SINR_ETs_lindo = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
-        [SINR_ETs_lindo, worstSINR_lindo, fair_lindo] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
-        SINR_ETs_lindo_container = [SINR_ETs_lindo_container, SINR_ETs_lindo];
-        fair_lindo_container = [fair_lindo_container, fair_lindo];
-        worstSINR_lindo_container = [worstSINR_lindo_container, worstSINR_lindo]; 
-        disp('snrRatio_lindo');
-        snrRatio_lindo = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);     % output quai SINR of all users
+        SINR_ETs_optimization = []; % there should be n*nET values
+%         SINR_ETs_optimization = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
+        [SINR_ETs_optimization, worstSINR_optimization, fair_optimization] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
+        SINR_ETs_optimization_container = [SINR_ETs_optimization_container, SINR_ETs_optimization];
+        fair_optimization_container = [fair_optimization_container, fair_optimization];
+        worstSINR_optimization_container = [worstSINR_optimization_container, worstSINR_optimization]; 
+        disp('snrRatio_optimization');
+        snrRatio_optimization = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);     % output quai SINR of all users
         
         
-        B_lindo= B;
+        B_optimization= B;
         
         %%
         %---------------------------|
@@ -449,9 +449,6 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         %---------potential game ends!
 %%
         
-        
-        % with lindo(fixed power), lindo(variable power), and distributed
-        % variable power
         utilityHistory(:, run) = [random_perf(1); dica_perf(1); selfishUpdate_perf(1); noregret_perf(1); GUROBI_Perf(1); PotentialGame_perf(1)];
         powerHistory(:, run) = [random_perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3); GUROBI_Perf(3); PotentialGame_perf(3)];
         averageSinrHistory(:, run) = [random_perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4); GUROBI_Perf(4); PotentialGame_perf(4)];

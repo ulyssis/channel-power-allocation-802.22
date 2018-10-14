@@ -1,7 +1,7 @@
 function [SINRofETs, averageSINR, error, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, Gtilde, nET, TVpower, delta)
     
     inf_ET_SU = Gtilde(1:n*nET, n*nET+1:n*nET+n).*(ones(n*nET,1)*sum(B, 2)'); % n*nET x n, the power received from every SU
-    [V, I] = max(inf_ET_SU'); % I stores the indices of the PU for each ET, which transmits the biggest power to that ET. cell selection!
+    [V, I] = max(inf_ET_SU'); % I stores the indices of the WBS for each ET which receives the biggest power. For cell selection!
     F = (B* B' ~= 0); % n x n, relationship between SUs
     F = F - eye(size(B, 1));
     F_ET = [];
