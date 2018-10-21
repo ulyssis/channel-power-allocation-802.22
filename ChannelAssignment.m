@@ -34,10 +34,12 @@ echo off;
 clc;
 addpath("/Users/max/Documents/git_li/channel-power-allocation-802.22/cvx");
 addpath("/Library/gurobi801/mac64/matlab");
+gurobi_setup;
+savepath;
 
 runtimes =  10 ;  % number of simulation run
-    n = 16;    % number of WBS
-    c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    n = 4;    % number of WBS
+    c = 2;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -46,7 +48,7 @@ runtimes =  10 ;  % number of simulation run
     pathlossfactor = 2;    
     miniP = 4; % 36dbm, the minmum power for users
     maxP = 40; % 46dbm
-    nET = 10;   % number of endterminals in each WBS 
+    nET = 10;  % number of endterminals in each WBS 
     s = 8; % set standard deviation
     coverage = lengthSide/4/2 * 0.7; % the maximal distance away from the WBS, whihc a terminal can have 
                                      % This value should consider SUcellRadius.
@@ -161,7 +163,7 @@ for run = 1: runtimes % the number of simulations
             = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-                schemeIIEnabled, PMiu, POpertation);
+                schemeIIEnabled, PMiu, POpertation, infBound);
 %% run channel assignment scheme II
 
 

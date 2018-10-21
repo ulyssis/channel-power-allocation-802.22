@@ -1,90 +1,19 @@
        
 function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] = ...
     runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-    schemeIIEnabled, PMiu, POpertation)
+    schemeIIEnabled, PMiu, POperation, infBound)
 
 
 seq = randperm(n);
 %% scheme II
 if(schemeIIEnabled)
-            
-   % variables, the number of variables is nc + 2n^2c +2n
-   % _________________________________________________________________
-   % variable | x_i^k        \alpha_i^k       \beta_i^k    y_i    z_i
-   % number   | n*c          n^2*c            n^2*c         n      n
-   % -----------------------------------------------------------------
-       arrayForQ = zeros(n*c + 2*n^2*c +2*n, n*c + 2*n^2*c +2*n);
-       for i = 1:n
-        for j = i:n
-            if(j~=i)
-                for k = i:c
-                    rowIndex1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
-                    columnIndex1 = n*c + 2*n^2*c + n + i; 
-                    rowIndex2 = (i-1)*n + i;
-                    arrayForQ (rowIndex1, columnIndex1) = Gtilde(j, i)*(PMiu-POperation);
-                    arrayForQ (rowIndex2, columnIndex1) = delta*(PMiu-POperation);
-                end
-            end
-        end
-       end
-       
-       vectorForObj = zeros(1, n*c + 2*n^2*c +2*n);
-       
-       for i = 1:n
-        for j = i:n
-            if(j~=i)
-                for k = i:c
-                    index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
-                    index2 = (i-1)*n + i;
-                    vectorForObj (index1) = Gtilde(j, i) * POperation;
-                    vectorForObj (index2) = delta * POperation;
-                end
-            end
-        end
-       end
-        
-       % contraits: there are 6*n^2*c+3*n linear inequalities in the constraitns
-       arrayForA = zeros(6*n^2*c + 3*n, n*c + 2*n^2*c +2*n);
-            % first linear inequalities
-               for i = 1:n
-                for j = i:n
-                    if(j~=i)
-                        for k = i:c
-                            % index of the linear inequalitie
-                            indexInequality = (i-1)*n + (j-1)*n + k;
-                            index1 = 
-                                                    end
-                    end
-                end
-               end
-            
-              
+opt1Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
+end
+
 
     
-       
-       % model.Q
-       
-       
-       % model.obj
-       
-       % model.A
-       
-       % model.c
-       
-%        optimizaionModel2.Q = sparse(arrayH);
-%         optimizaionModel2.obj = NoisePowerRatioInOneRow;
-%         
-%         optimizaionModel2.A = sparse(A);
-%         optimizaionModel2.rhs = ones(1, n);
-%         optimizaionModel2.sense = '=';
-%         optimizaionModel2.vtype = 'B';
-%         %optimizaionModel2.modelsense = 'min';
-%         opt1Results = GUROBI(optimizaionModel2);
-       
     
-    
-    
-end
+
 
    %% random channel allocation
    
