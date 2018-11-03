@@ -7,12 +7,43 @@ function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, S
 seq = randperm(n);
 %% scheme II
 if(schemeIIEnabled)
-opt1Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
+    %% centralized
+    opt2Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
+    
+        ResultXSchemeII = zeros(n, c);
+        for i=1:c
+            ResultXSchemeII(:, i) = opt2Results.x((i-1)*n + 1 : i*n)';
+        end
+
+    % the n auxiliary variables
+    ResultYSchemeII = opt2Results.x(n*c + 2*n^2*c +1: n*c + 2*n^2*c +n);   
+
+    % the n auxiliary variables
+    ResultZSchemeII = opt2Results.x(n*c + 2*n^2*c +n+1: n*c + 2*n^2*c + 2*n);
+
+    synthesisSchemeII = zeros(1, n);
+
+    for i = 1:n
+        if(ResultYSchemeII(i) ~= ResultZSchemeII(i))
+            synthesisSchemeII(i) = ResultYSchemeII(i)*PMiu +(1-ResultYSchemeII(i))*POperation;
+        else
+            synthesisSchemeII(i) = PMiu;
+        end
+
+    end
+    
+    B = ResultXSchemeII .* (synthesisSchemeII' * ones(1, c));
+    
+    %% distribtued:
+    % 1. a WBS starts operating
+    % 2. while(interference threshold is not exceeded)
+    %      |     starts a new WBS;
+    %      |     other operating WBSs adjust
+    %    end
+    
 end
 
 
-    
-    
 
 
    %% random channel allocation
@@ -149,7 +180,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         optimizaionModel1.sense = '=';
         optimizaionModel1.vtype = 'B';
         %optimizaionModel1.modelsense = 'min';
-        opt1Results = GUROBI(optimizaionModel1);
+        opt1Results = gurobi(optimizaionModel1);
         
         %assignin('base', 'results', opt1Results);
         resultX = zeros(n, c);
@@ -458,13 +489,15 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         end
         B_PotentialGame = B;        
         %---------potential game ends!
-%%
+
+
+        %%
         
         utilityHistory(:, run) = [random_perf(1); dica_perf(1); selfishUpdate_perf(1); noregret_perf(1); GUROBI_Perf(1); PotentialGame_perf(1)];
         powerHistory(:, run) = [random_perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3); GUROBI_Perf(3); PotentialGame_perf(3)];
         averageSinrHistory(:, run) = [random_perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4); GUROBI_Perf(4); PotentialGame_perf(4)];
         averageStdHistory(:, run) = [random_perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5); GUROBI_Perf(5); PotentialGame_perf(5)];
-        
+    
         
         
 %         %  with lindo

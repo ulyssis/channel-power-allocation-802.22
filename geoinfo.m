@@ -28,7 +28,7 @@ function [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(
 
     % pathloss(atinuation+shadowing) among SUs and TV contours
     d = dist([posSU posTVContor posTV]);      % get channel gain matrix for SUs + TVContors + TVs
-    GAll = ones(n+m+m, n+m+m)./ (d + diag(ones(n+m+m, 1))).^pathlossfactor;
+    GAll = ones(n+m+m, n+m+m)./ (d - SUcellRadius + diag(ones(n+m+m, 1))).^pathlossfactor;
 %                 shadow = normrnd (0, s, n+m+m, n+m+m);
 %                 GAll = GAll.*10.^(shadow/10);
     GtildeAll = GAll - diag(diag(GAll));

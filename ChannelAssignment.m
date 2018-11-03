@@ -37,8 +37,8 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-runtimes =  10 ;  % number of simulation run
-    n = 4;    % number of WBS
+runtimes =  1 ;  % number of simulation run
+    n = 3;    % number of WBS
     c = 2;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
