@@ -56,7 +56,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = (i-1)*n + (j-1)*n + k;
+                            indexInequality = (k-1)*n^2 + (j-1)*n + i;
                             index1 = (k-1)*n + i;
                             index2 = (k-1)*n + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
@@ -76,7 +76,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = n^2*c + (i-1)*n + (j-1)*n + k;
+                            indexInequality = n^2*c + (k-1)*n^2 + (j-1)*n + i;
                             index1 = (k-1)*n + i;
                             index2 = (k-1)*n + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
@@ -95,7 +95,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 2*n^2*c + (i-1)*n + (j-1)*n + k;
+                            indexInequality = 2*n^2*c + (k-1)*n^2 + (j-1)*n + i;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = 1;
@@ -112,7 +112,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 3*n^2*c + (i-1)*n + (j-1)*n + k;
+                            indexInequality = 3*n^2*c + (k-1)*n^2 + (j-1)*n + i;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = -1;
@@ -129,7 +129,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 4*n^2*c + (i-1)*n + (j-1)*n + k;
+                            indexInequality = 4*n^2*c + (k-1)*n^2 + (j-1)*n + i;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + 2*n^2*c + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
@@ -148,7 +148,7 @@ infBound = infBound * (10e+10);
                     if(j~=i)
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 5*n^2*c + (i-1)*n + (j-1)*n + k;
+                            indexInequality = 5*n^2*c + (k-1)*n^2 + (j-1)*n + i;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + 2*n^2*c + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
