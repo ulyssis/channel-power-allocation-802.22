@@ -49,192 +49,204 @@ infBound = infBound * (10e+10);
        % and n*c + 2*n^2*c + 2*n variables.
        arrayForA = zeros(6*n^2*c + 5*n, n*c + 2*n^2*c +2*n);
        
-       
+       ConstraintGroupStartsIndex = 1;
+       indexOfLinearConstraints = ConstraintGroupStartsIndex;
             % 1st linear inequality group
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = (k-1)*n^2 + (j-1)*n + i;
+                            indexInequality = indexOfLinearConstraints;
                             index1 = (k-1)*n + i;
                             index2 = (k-1)*n + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = 1;
                             arrayForA(indexInequality, index2) = 1;
                             arrayForA(indexInequality, index3) = -1;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end
                
-               rhs1 = ones(1, n^2*c);
+               rhs1 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
                
              % 2nd linear inequality group
+                ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = n^2*c + (k-1)*n^2 + (j-1)*n + i;
+                            indexInequality = indexOfLinearConstraints;
                             index1 = (k-1)*n + i;
                             index2 = (k-1)*n + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = -1;
                             arrayForA(indexInequality, index2) = -1;
                             arrayForA(indexInequality, index3) = 2;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end
-               rhs2 = zeros(1, n^2*c);
+               rhs2 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               
                
              % 3rd linear inequality group
+                ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 2*n^2*c + (k-1)*n^2 + (j-1)*n + i;
-                            index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
+                            indexInequality = indexOfLinearConstraints;
                             index2 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = 1;
                             arrayForA(indexInequality, index2) = -POperation;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end
-               rhs3 = zeros(1, n^2*c);
+               rhs3 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
                
              % 4th linear inequality group
+             ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 3*n^2*c + (k-1)*n^2 + (j-1)*n + i;
+                            indexInequality = indexOfLinearConstraints;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = -1;
                             arrayForA(indexInequality, index2) = PMiu;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end       
-               rhs4 = zeros(1, n^2*c);
+               rhs4 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
               
              % 5th linear inequality group
+             ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 4*n^2*c + (k-1)*n^2 + (j-1)*n + i;
+                            indexInequality = indexOfLinearConstraints;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + 2*n^2*c + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = 1;
                             arrayForA(indexInequality, index2) = POperation - PMiu;
                             arrayForA(indexInequality, index3) = - PMiu;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end
-               rhs5 = ones(1, n^2*c)*(POperation - PMiu);
+               rhs5 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex)*(POperation - PMiu);
                
              % 6th linear inequality group
+             ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                for j = i:n
-                    if(j~=i)
+                for j = i+1:n
                         for k = 1:c
                             % index of the linear inequality
-                            indexInequality = 5*n^2*c + (k-1)*n^2 + (j-1)*n + i;
+                            indexInequality = indexOfLinearConstraints;
                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
                             index2 = n*c + 2*n^2*c + j;
                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
                             arrayForA(indexInequality, index1) = -1;
                             arrayForA(indexInequality, index2) = -POperation + PMiu;
                             arrayForA(indexInequality, index3) = POperation;
+                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
                         end
-                    end
                 end
                end    
-               rhs6 = zeros(1, n^2*c);
+               rhs6 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
                
-
+                numberOfLinearConsPart1 = indexOfLinearConstraints - 1;
                
              % quadratic equality relaxation p_to_binary_rex_1
              % 7th linear inequality group
+             ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
                 % index of the linear inequalitie
-                indexInequality = 6*n^2*c + i;
+                indexInequality = indexOfLinearConstraints;
                 index1 = n*c + 2*n^2*c + i;
                 index2 = n*c + 2*n^2*c + n + i;
                 arrayForA(indexInequality, index1) = PMiu;
-                arrayForA(indexInequality, index2) = POperation;                
+                arrayForA(indexInequality, index2) = POperation;
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end 
-               rhs7 = ones(1, n) * (POperation^2-1)/(POperation - PMiu);
+               rhs7 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (POperation^2-1)/(POperation - PMiu);
 
                
              %  quadratic equality relaxation, p_to_binary_rex_2
              % 8th linear inequality group
+               ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
                 % index of the linear inequalitie
-                indexInequality = 6*n^2*c + n + i;
+                indexInequality = indexOfLinearConstraints;
                 index1 = n*c + 2*n^2*c + i;
                 index2 = n*c + 2*n^2*c + n + i;
                 arrayForA(indexInequality, index1) = POperation;
-                arrayForA(indexInequality, index2) = PMiu;                
+                arrayForA(indexInequality, index2) = PMiu;
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end      
-               rhs8 = ones(1, n) * (POperation^2-1)/(POperation - PMiu);
+               rhs8 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (POperation^2-1)/(POperation - PMiu);
 
 
               % 9th linear Equality group
+               ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                % index of the linear inequalitie
-                indexInequality = 6*n^2*c + 2*n + i;
+                indexInequality = indexOfLinearConstraints;
                 for k = 1:c
                     arrayForA(indexInequality, (k-1)*n + i) = 1;
                 end
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
+
                end                
-               rhs9 = ones(1, n);
+               rhs9 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
 
                
                % quadratic equality relaxation, p_to_binary_rex_3
                % 10th linear inequality group
+               ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
                 % index of the linear inequalitie
-                indexInequality = 6*n^2*c + 3*n + i;
+                indexInequality = indexOfLinearConstraints;
                 index1 = n*c + 2*n^2*c + i;
                 index2 = n*c + 2*n^2*c + n + i;
                 arrayForA(indexInequality, index1) = -1;
-                arrayForA(indexInequality, index2) = -1;                
+                arrayForA(indexInequality, index2) = -1;
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end      
-               rhs10 = ones(1, n) * (1+PMiu^2-2*PMiu*POperation)/(PMiu*POperation - PMiu^2);
+               rhs10 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1+PMiu^2-2*PMiu*POperation)/(PMiu*POperation - PMiu^2);
 
                
                % quadratic equality relaxation, p_to_binary_rex_4
                % 11th linear inequality group
+               ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
                 % index of the linear inequalitie
-                indexInequality = 6*n^2*c + 4*n + i;
+                indexInequality = indexOfLinearConstraints;
                 index1 = n*c + 2*n^2*c + i;
                 index2 = n*c + 2*n^2*c + n + i;
                 arrayForA(indexInequality, index1) = -1;
-                arrayForA(indexInequality, index2) = -1;                
+                arrayForA(indexInequality, index2) = -1;
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end      
-               rhs11 = ones(1, n) * (1- POperation^2)/(POperation^2 - PMiu*POperation);
-         
+               rhs11 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1- POperation^2)/(POperation^2 - PMiu*POperation);
+         arrayForA_2 = arrayForA(1:indexInequality, :);
+               
         %% solve model
         model.Q   = sparse(arrayForQ);
 
         model.obj = vectorForObj;
 
-        model.A = sparse(arrayForA);
+        model.A = sparse(arrayForA_2);
 
         model.rhs = [rhs1 rhs2 rhs3 rhs4 rhs5 rhs6 rhs7 rhs8 rhs9 rhs10 rhs11];
 
-        senseVector1 = cell(1, (6*n^2*c + 2*n));
+        % ------------------------
+        senseVector1 = cell(1, numberOfLinearConsPart1 + 2*n);
         senseVector1(:) = {'<'};
         sense1 = char(senseVector1);
         
@@ -245,7 +257,8 @@ infBound = infBound * (10e+10);
         senseVector3 = cell(1, 2*n);
         senseVector3(:) = {'<'};
         sense3 = char(senseVector3);
-
+        % ------------------------
+        
         model.sense = [sense1' sense2' sense3'];
 
         model.vtype = 'B';
