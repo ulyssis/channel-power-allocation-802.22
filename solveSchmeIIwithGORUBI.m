@@ -43,8 +43,9 @@ infBound = infBound * (10e+10);
             end
         end
        end
-        
-       %% model.A
+       
+       
+       %% model.A, the parameters for the linear constraints
        % contraits: there are 6*n^2*c + 5*n linear inequalities/equalities in the constraitns
        % and n*c + 2*n^2*c + 2*n variables.
        arrayForA = zeros(6*n^2*c + 5*n, n*c + 2*n^2*c +2*n);
@@ -264,7 +265,6 @@ infBound = infBound * (10e+10);
         model.vtype = 'B';
         
         %% solve model.quadcon
-        
         % The quadratic constraint
         
         for k = 1:c

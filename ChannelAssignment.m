@@ -38,8 +38,8 @@ gurobi_setup;
 savepath;
 
 runtimes =  1 ;  % number of simulation run
-    n = 16;    % number of WBS
-    c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    n = 3;    % number of WBS
+    c = 2;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
