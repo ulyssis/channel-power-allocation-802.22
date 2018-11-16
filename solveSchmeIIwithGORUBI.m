@@ -176,30 +176,30 @@ infBound = infBound * (10e+10);
                modelSENSE = [modelSENSE sense5'];                
                
                
-             % 6th linear inequality group
-             ConstraintGroupStartsIndex = indexOfLinearConstraints;
-               for i = 1:n
-                for j = i+1:n
-                        for k = 1:c
-                            % index of the linear inequality
-                            indexInequality = indexOfLinearConstraints;
-                            index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
-                            index2 = n*c + 2*n^2*c + j;
-                            index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
-                            arrayForA(indexInequality, index1) = -1;
-                            arrayForA(indexInequality, index2) = -POperation + PMiu;
-                            arrayForA(indexInequality, index3) = POperation;
-                            indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
-                        end
-                end
-               end    
-               rhs6 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
-               modelRHS = [modelRHS rhs6];
-               
-               senseVector6 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
-               senseVector6(:) = {'<'};
-               sense6 = char(senseVector6);
-               modelSENSE = [modelSENSE sense6'];                
+%              % 6th linear inequality group
+%              ConstraintGroupStartsIndex = indexOfLinearConstraints;
+%                for i = 1:n
+%                 for j = i+1:n
+%                         for k = 1:c
+%                             % index of the linear inequality
+%                             indexInequality = indexOfLinearConstraints;
+%                             index1 = n*c + n^2*c + (k-1)*n^2 + (i-1)*n + j;
+%                             index2 = n*c + 2*n^2*c + j;
+%                             index3 = n*c + (k-1)*n^2 + (i-1)*n + j;
+%                             arrayForA(indexInequality, index1) = -1;
+%                             arrayForA(indexInequality, index2) = -POperation + PMiu;
+%                             arrayForA(indexInequality, index3) = POperation;
+%                             indexOfLinearConstraints = indexOfLinearConstraints + 1;                            
+%                         end
+%                 end
+%                end    
+%                rhs6 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+%                modelRHS = [modelRHS rhs6];
+%                
+%                senseVector6 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+%                senseVector6(:) = {'<'};
+%                sense6 = char(senseVector6);
+%                modelSENSE = [modelSENSE sense6'];                
                
                
                
