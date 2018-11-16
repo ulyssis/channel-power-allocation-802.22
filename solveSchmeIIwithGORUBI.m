@@ -49,6 +49,9 @@ infBound = infBound * (10e+10);
        % contraits: there are 6*n^2*c + 5*n linear inequalities/equalities in the constraitns
        % and n*c + 2*n^2*c + 2*n variables.
        arrayForA = zeros(6*n^2*c + 5*n, n*c + 2*n^2*c +2*n);
+       % model.rhs
+       modelRHS = [];
+       modelSENSE = [];
        
        ConstraintGroupStartsIndex = 1;
        indexOfLinearConstraints = ConstraintGroupStartsIndex;
@@ -70,7 +73,14 @@ infBound = infBound * (10e+10);
                end
                
                rhs1 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               modelRHS = [modelRHS rhs1];
                
+               senseVector1 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+                senseVector1(:) = {'<'};
+                sense1 = char(senseVector1);
+                modelSENSE = [modelSENSE sense1'];
+        
+        
              % 2nd linear inequality group
                 ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
@@ -89,7 +99,12 @@ infBound = infBound * (10e+10);
                 end
                end
                rhs2 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               modelRHS = [modelRHS rhs2];
                
+               senseVector2 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector2(:) = {'<'};
+               sense2 = char(senseVector2);
+               modelSENSE = [modelSENSE sense2'];               
                
              % 3rd linear inequality group
                 ConstraintGroupStartsIndex = indexOfLinearConstraints;
@@ -106,6 +121,12 @@ infBound = infBound * (10e+10);
                 end
                end
                rhs3 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               modelRHS = [modelRHS rhs3];
+               
+               senseVector3 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector3(:) = {'<'};
+               sense3 = char(senseVector3);
+               modelSENSE = [modelSENSE sense3'];  
                
              % 4th linear inequality group
              ConstraintGroupStartsIndex = indexOfLinearConstraints;
@@ -123,6 +144,12 @@ infBound = infBound * (10e+10);
                 end
                end       
                rhs4 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+              modelRHS = [modelRHS rhs4];
+              senseVector4 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector4(:) = {'<'};
+               sense4 = char(senseVector4);
+               modelSENSE = [modelSENSE sense4'];  
+              
               
              % 5th linear inequality group
              ConstraintGroupStartsIndex = indexOfLinearConstraints;
@@ -142,6 +169,12 @@ infBound = infBound * (10e+10);
                 end
                end
                rhs5 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex)*(POperation - PMiu);
+               modelRHS = [modelRHS rhs5];
+               senseVector5 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector5(:) = {'<'};
+               sense5 = char(senseVector5);
+               modelSENSE = [modelSENSE sense5'];                
+               
                
              % 6th linear inequality group
              ConstraintGroupStartsIndex = indexOfLinearConstraints;
@@ -161,8 +194,14 @@ infBound = infBound * (10e+10);
                 end
                end    
                rhs6 = zeros(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               modelRHS = [modelRHS rhs6];
                
-                numberOfLinearConsPart1 = indexOfLinearConstraints - 1;
+               senseVector6 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector6(:) = {'<'};
+               sense6 = char(senseVector6);
+               modelSENSE = [modelSENSE sense6'];                
+               
+               
                
              % quadratic equality relaxation p_to_binary_rex_1
              % 7th linear inequality group
@@ -177,7 +216,13 @@ infBound = infBound * (10e+10);
                 indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end 
                rhs7 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (POperation^2-1)/(POperation - PMiu);
+                modelRHS = [modelRHS rhs7];
 
+               senseVector7 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector7(:) = {'<'};
+               sense7 = char(senseVector7);
+               modelSENSE = [modelSENSE sense7'];   
+               
                
              %  quadratic equality relaxation, p_to_binary_rex_2
              % 8th linear inequality group
@@ -192,22 +237,36 @@ infBound = infBound * (10e+10);
                 indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end      
                rhs8 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (POperation^2-1)/(POperation - PMiu);
-
-
-              % 9th linear Equality group
-               ConstraintGroupStartsIndex = indexOfLinearConstraints;
-               for i = 1:n
-                indexInequality = indexOfLinearConstraints;
-                for k = 1:c
-                    arrayForA(indexInequality, (k-1)*n + i) = 1;
-                end
-                indexOfLinearConstraints = indexOfLinearConstraints + 1;
-
-               end                
-               rhs9 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+                modelRHS = [modelRHS rhs8];
+                
+               senseVector8 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector8(:) = {'<'};
+               sense8 = char(senseVector8);
+               modelSENSE = [modelSENSE sense8'];           
 
                
                % quadratic equality relaxation, p_to_binary_rex_3
+               % 9th linear inequality group
+               ConstraintGroupStartsIndex = indexOfLinearConstraints;
+               for i = 1:n
+                % index of the linear inequalitie
+                indexInequality = indexOfLinearConstraints;
+                index1 = n*c + 2*n^2*c + i;
+                index2 = n*c + 2*n^2*c + n + i;
+                arrayForA(indexInequality, index1) = -1;
+                arrayForA(indexInequality, index2) = -1;
+                indexOfLinearConstraints = indexOfLinearConstraints + 1;
+               end      
+               rhs9 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1+PMiu^2-2*PMiu*POperation)/(PMiu*POperation - PMiu^2);
+               modelRHS = [modelRHS rhs9];
+                
+               senseVector9 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector9(:) = {'<'};
+               sense9 = char(senseVector9);
+               modelSENSE = [modelSENSE sense9']; 
+               
+               
+               % quadratic equality relaxation, p_to_binary_rex_4
                % 10th linear inequality group
                ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
@@ -219,22 +278,33 @@ infBound = infBound * (10e+10);
                 arrayForA(indexInequality, index2) = -1;
                 indexOfLinearConstraints = indexOfLinearConstraints + 1;
                end      
-               rhs10 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1+PMiu^2-2*PMiu*POperation)/(PMiu*POperation - PMiu^2);
+               rhs10 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1- POperation^2)/(POperation^2 - PMiu*POperation);
+               modelRHS = [modelRHS rhs10];
 
+               senseVector10 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector10(:) = {'<'};
+               sense10 = char(senseVector10);
+               modelSENSE = [modelSENSE sense10'];      
                
-               % quadratic equality relaxation, p_to_binary_rex_4
-               % 11th linear inequality group
+               
+              % 11th linear Equality group
                ConstraintGroupStartsIndex = indexOfLinearConstraints;
                for i = 1:n
-                % index of the linear inequalitie
                 indexInequality = indexOfLinearConstraints;
-                index1 = n*c + 2*n^2*c + i;
-                index2 = n*c + 2*n^2*c + n + i;
-                arrayForA(indexInequality, index1) = -1;
-                arrayForA(indexInequality, index2) = -1;
+                for k = 1:c
+                    arrayForA(indexInequality, (k-1)*n + i) = 1;
+                end
                 indexOfLinearConstraints = indexOfLinearConstraints + 1;
-               end      
-               rhs11 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex) * (1- POperation^2)/(POperation^2 - PMiu*POperation);
+
+               end                
+               rhs11 = ones(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+                modelRHS = [modelRHS rhs11];
+                
+               senseVector11 = cell(1, indexOfLinearConstraints - ConstraintGroupStartsIndex);
+               senseVector11(:) = {'='};
+               sense11 = char(senseVector11);
+               modelSENSE = [modelSENSE sense11'];                    
+                
          arrayForA_2 = arrayForA(1:indexInequality, :);
                
         %% solve model
@@ -243,24 +313,10 @@ infBound = infBound * (10e+10);
         model.obj = vectorForObj;
 
         model.A = sparse(arrayForA_2);
-
-        model.rhs = [rhs1 rhs2 rhs3 rhs4 rhs5 rhs6 rhs7 rhs8 rhs9 rhs10 rhs11];
-
-        % ------------------------
-        senseVector1 = cell(1, numberOfLinearConsPart1 + 2*n);
-        senseVector1(:) = {'<'};
-        sense1 = char(senseVector1);
         
-        senseVector2 = cell(1, n);
-        senseVector2(:) = {'='};
-        sense2 = char(senseVector2);
+        model.rhs = modelRHS;
         
-        senseVector3 = cell(1, 2*n);
-        senseVector3(:) = {'<'};
-        sense3 = char(senseVector3);
-        % ------------------------
-        
-        model.sense = [sense1' sense2' sense3'];
+        model.sense = modelSENSE;
 
         model.vtype = 'B';
         
@@ -272,7 +328,8 @@ infBound = infBound * (10e+10);
             vector = zeros(n*c + 2*n^2*c + 2*n, 1);
             for i= 1:n
                     matrix((k-1)*n+i, n*c + 2*n^2*c + i) = (PMiu - POperation)*GtildeAll(i, n+k);
-                    vector((k-1)*n +i : k*n) = POperation * GtildeAll(i, n+k);
+                    %vector((k-1)*n +i : k*n) = POperation * GtildeAll(i, n+k);
+                    vector((k-1)*n +i) = POperation * GtildeAll(i, n+k);
             end
             model.quadcon(k).Qc = sparse(matrix);
             model.quadcon(k).q = vector;
