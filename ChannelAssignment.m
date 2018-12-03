@@ -37,13 +37,13 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-runtimes =  1 ;  % number of simulation run
+runtimes =  20 ;  % number of simulation run
     n = 16;    % number of WBS
-    c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
-    infBound = 1*10.^(-7);     % The interfernce threshold on PU contour    
+    infBound = 1*10.^(-7);     % The interfernce threshold on PU contour  
     TVpower = 0;
     pathlossfactor = 2;    
     miniP = 4; % 36dbm, the minmum power for users
@@ -52,12 +52,12 @@ runtimes =  1 ;  % number of simulation run
     s = 8; % set standard deviation
     coverage = lengthSide/4/2 * 0.7; % the maximal distance away from the WBS, whihc a terminal can have 
                                      % This value should consider SUcellRadius.
-    eta= 1; % the discount ofrapist the sum 5.7580of interference from different WBSs, to represent the interference on the measurement point 
+    eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
     tic;
 
-    PMiu = 1/20;
-    POpertation = 20;
+    PMiu = 1/90;
+    POpertation = 1/PMiu;
     
     SUcellRadius = 3000;
     schemeIIEnabled = 1;
@@ -111,9 +111,11 @@ B_noregret=[];
 lp_container=[];
 cvx_container=[];
 
+RetGUROBI_FCC = zeros(1, runtimes);
 
 
 for run = 1: runtimes % the number of simulations
+    
 %         %% make sure that both LP and CVX are feasible
 %         linprogWork = -2;
 %         max_cvx_statusMsg =2;
@@ -156,15 +158,20 @@ for run = 1: runtimes % the number of simulations
     plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
     %plotMaximalPower(P, n, c);
 
-%% run channel assignment scheme I and comparison schemes
-        [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-            SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-            B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
-            = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+% %% run channel assignment scheme I and comparison schemes
+%         [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
+%             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
+%             B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame, RetGUROBI_FCC] ...
+%             = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+%             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
+%             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
+%                 schemeIIEnabled, PMiu, POpertation, infBound, RetGUROBI_FCC);
+%% run channel assignment centralized scheme II
+
+        [RetGUROBI_FCC] = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-                schemeIIEnabled, PMiu, POpertation, infBound);
-%% run channel assignment scheme II
+                schemeIIEnabled, PMiu, POpertation, infBound, RetGUROBI_FCC);
 
 
 end
@@ -179,18 +186,9 @@ plotLog = SUcellRadius/100+10;
 %         % plot figures for only maximal power decision
 %         worst20(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_optimization_container);
 %         worst20(n, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_optimization_container2);
-
-
-
 %end
 
 
-
-
-
-
-
-        
 
 
 % %         % Record the sum of utility in the converging
@@ -201,7 +199,6 @@ plotLog = SUcellRadius/100+10;
 % %         convergenplot(sumUtilityWhitecat, sumUtilityWhitecase, sumUtilityNoregret);
 % %%%%%----4 schemes section------------
         
-
         
 % % % % %this is undone
 % % % % plotConvergenceSteps(convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret);

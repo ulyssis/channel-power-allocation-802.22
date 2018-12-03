@@ -1,4 +1,4 @@
-% update channel
+% whiteCat, update channel
 
 % the utlity to switch is: f*p^(0.5)/p, 
 

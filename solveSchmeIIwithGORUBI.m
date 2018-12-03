@@ -1,9 +1,9 @@
 function[opt1Results] = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound)
                                                
-delta = delta * (10e+10);
-Gtilde = Gtilde * (10e+10);
-GtildeAll = GtildeAll * (10e+10);
-infBound = infBound * (10e+10);
+delta = delta * (1e+10);
+Gtilde = Gtilde * (1e+10);
+GtildeAll = GtildeAll * (1e+10);
+infBound = infBound * (1e+10);
 
    % variables, the number of variables is n*c + 2n^2c +2n
    % _________________________________________________________________
@@ -327,9 +327,9 @@ infBound = infBound * (10e+10);
             matrix = zeros(n*c + 2*n^2*c + 2*n, n*c + 2*n^2*c + 2*n);
             vector = zeros(n*c + 2*n^2*c + 2*n, 1);
             for i= 1:n
-                    matrix((k-1)*n+i, n*c + 2*n^2*c + i) = (PMiu - POperation)*GtildeAll(i, n+k);
+                    matrix((k-1)*n+i, n*c + 2*n^2*c + i) = (PMiu - POperation)*GtildeAll(n+k, i);
                     %vector((k-1)*n +i : k*n) = POperation * GtildeAll(i, n+k);
-                    vector((k-1)*n +i) = POperation * GtildeAll(i, n+k);
+                    vector((k-1)*n +i) = POperation * GtildeAll(n+k, i);
             end
             model.quadcon(k).Qc = sparse(matrix);
             model.quadcon(k).q = vector;
@@ -338,5 +338,5 @@ infBound = infBound * (10e+10);
         end
 
                 
-    
+
        opt1Results = gurobi(model);
