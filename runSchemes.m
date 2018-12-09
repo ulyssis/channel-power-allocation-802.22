@@ -14,43 +14,44 @@ if(schemeIIEnabled)
     opt2Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
 
         % -- to record how many times GUROBI returns solution.
-        exist opt2Results;
-        if(ans == 1)
-                        RetGUROBI_FCC(run) = 1;
-                        SchemeIISolutionFlag = 1;
+        resultStatus = strcmp(opt2Results.status, 'OPTIMAL');
+        if(resultStatus)
+            RetGUROBI_FCC(run) = 1;
+            SchemeIISolutionFlag = 1;
+                        
+            %% record how many times GUROBI returns solution
+            ResultXSchemeII = zeros(n, c);
+            for k=1:c
+                ResultXSchemeII(:, k) = opt2Results.x((k-1)*n + 1 : k*n)';
+            end
+            %% get B_scheme2Centralized
+            % the n auxiliary variables
+            ResultYSchemeII = opt2Results.x(n*c + 2*n^2*c +1: n*c + 2*n^2*c +n);   
+            % the n auxiliary variables
+            ResultZSchemeII = opt2Results.x(n*c + 2*n^2*c +n+1: n*c + 2*n^2*c + 2*n);
+
+            synthesisSchemeII = zeros(1, n);
+
+            for i = 1:n
+                if(ResultYSchemeII(i) ~= ResultZSchemeII(i))
+                    synthesisSchemeII(i) = ResultYSchemeII(i)*PMiu +(1-ResultYSchemeII(i))*POperation;
+                else
+                    synthesisSchemeII(i) = PMiu;
+                end
+
+            end
+
+            B = ResultXSchemeII .* (synthesisSchemeII' * ones(1, c));
+
+            B_scheme2Centralized = B;
+    
                         
         else
                         RetGUROBI_FCC(run) = 0;
+
         end
-        return;
-        % -- to record how many times GUROBI returns solution.
+        
 
-    
-        ResultXSchemeII = zeros(n, c);
-        for k=1:c
-            ResultXSchemeII(:, k) = opt2Results.x((k-1)*n + 1 : k*n)';
-        end
-
-    % the n auxiliary variables
-    ResultYSchemeII = opt2Results.x(n*c + 2*n^2*c +1: n*c + 2*n^2*c +n);   
-
-    % the n auxiliary variables
-    ResultZSchemeII = opt2Results.x(n*c + 2*n^2*c +n+1: n*c + 2*n^2*c + 2*n);
-
-    synthesisSchemeII = zeros(1, n);
-
-    for i = 1:n
-        if(ResultYSchemeII(i) ~= ResultZSchemeII(i))
-            synthesisSchemeII(i) = ResultYSchemeII(i)*PMiu +(1-ResultYSchemeII(i))*POperation;
-        else
-            synthesisSchemeII(i) = PMiu;
-        end
-
-    end
-    
-    B = ResultXSchemeII .* (synthesisSchemeII' * ones(1, c));
-    
-    B_scheme2Centralized = B;
     
 
     
@@ -58,7 +59,7 @@ if(schemeIIEnabled)
         
     
     
-    %% Scheme2Distributed
+        %% Scheme2Distributed
         %-------------------------------|
         %         scheme2distributed    |
         %-------------------------------|
@@ -81,27 +82,28 @@ if(schemeIIEnabled)
         [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
         SINR_ETs_previous = SINRofETs;
         
+        sumUtilityScheme2distributed = [];
         while (stop == 0)
             for i = 1: n
-                [B, updateFlag] = update_Scheme2Distributed(seq(i), B, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta, infBound, PMiu, POperation);
+                [B, updateFlag] = update_Scheme2Distributed(seq(i), B, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta, infBound, POperation);
                 updateCount = updateCount + updateFlag;
                 
                 if(updateFlag)  % there is a update
                     [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
-                    sumUtilityWhitecat(end+1) = sumUtility; % record the trace of sum utility
+                    sumUtilityScheme2distributed(end+1) = sumUtility; % record the trace of sum utility
                     
-                    % calculate the percentage of variance and sum up!
-                    [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
-                    if(size(SINRofETs)~= size(SINR_ETs_previous))
-                        dimensionsNoagree = 1;
-                    end
-                    delta1step = sum(abs((SINRofETs - SINR_ETs_previous)./SINR_ETs_previous));
+%                     % calculate the percentage of variance and sum up!
+%                     [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
+%                     if(size(SINRofETs)~= size(SINR_ETs_previous))
+%                         dimensionsNoagree = 1;
+%                     end
+%                     delta1step = sum(abs((SINRofETs - SINR_ETs_previous)./SINR_ETs_previous));
                     
                 else
-                    sumUtilityWhitecat(end+1) = sumUtilityWhitecat(end);
+                    sumUtilityScheme2distributed(end+1) = sumUtilityScheme2distributed(end);
                 end
                 
-                SINRvarianceWhitecat = SINRvarianceWhitecat + delta1step;
+%                 SINRvarianceScheme2distributed = SINRvarianceScheme2distributed + delta1step;
 
                 if i == n   % calculate utility after dealing with su n's channel, record the utility after one round optimization
                     [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
@@ -120,38 +122,35 @@ if(schemeIIEnabled)
             Bbackup = B; % Bbackup records the current B
         end
 
-        convergenceStepWhitecat(run) = size(sumUtilityWhitecat, 2);
-        SINRvarianceWhitecat_container(run) = SINRvarianceWhitecat;
+%         convergenceStepWhitecat(run) = size(sumUtilityScheme2distributed, 2);
+%         SINRvarianceWhitecat_container(run) = SINRvarianceWhitecat;
         
-        dica_perf = recordPerf(end, :);
-        
-        % check sinr on end users.
-        SINR_ETs_whitecat = []; % there should be n*nET values
-        %SINR_ETs_whitecat = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
-        [SINR_ETs_whitecat, worstSINR_cat, fair_cat] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);        
-        SINR_ETs_whitecat_container = [SINR_ETs_whitecat_container, SINR_ETs_whitecat];
-        fair_cat_container = [fair_cat_container, fair_cat];
-        worstSINR_cat_container = [worstSINR_cat_container, worstSINR_cat];
+%         dica_perf = recordPerf(end, :);
+%         
+%         % check sinr on end users.
+%         SINR_ETs_Scheme2distributed = []; % there should be n*nET values
+%         %SINR_ETs_whitecat = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
+%         [SINR_ETs_Scheme2distributed, worstSINR_Scheme2distributed, fair_Scheme2distributed] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);        
+%         SINR_ETs_Scheme2distributed_container = [SINR_ETs_Scheme2distributed_container, SINR_ETs_Scheme2distributed];
+%         fair_Scheme2distributed_container = [fair_Scheme2distributed_container, fair_Scheme2distributed];
+%         worstSINR_Scheme2distributed_container = [worstSINR_Scheme2distributed_container, worstSINR_Scheme2distributed];
+%         
+% 
+%         disp('snrRatio_Scheme2Distributed:');
+%         snrRatio_dica = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
         
 
-        disp('snrRatio_Scheme2Distributed:');
-        snrRatio_dica = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
-        
-        if (max(snrRatio_dica)>50)
-           sss=1; 
-        end
         B_Scheme2Distributed = B;
-    
-    
+
     end
-end
+else  %% the above codes execute scheme II, both centralized and distributed schemes.
 
 
+%% start here the channel allocation schemes for ECC (scheme I)
 
 
-%%
-        % Initialize channels asignment randomly
-       initialB = generateInitialChannelAllocationB_for_schemeI(n,c, P);
+        %%% Initialize channels asignment randomly
+        initialB = generateInitialChannelAllocationB_for_schemeI(n,c, P);
                     
         % check sinr on end users.
         SINR_ETs_random = []; % there should be n*nET values
@@ -161,15 +160,12 @@ end
         fair_random_container = [fair_random_container, fair_random];
         worstSINR_random_container = [worstSINR_random_container, worstSINR_random];
         
-        
         [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
 
         random_perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         disp(':');        
         snrRatio_random = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
-        B_random = B;
-
-        
+        B_random = B;       
         
 %         %-----------------------------------------------------------%
 %         %         optimation: channel allocation                   %
@@ -599,4 +595,4 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
 %         averageStdHistory(:, run) = [random_perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5)];
         
 %        convergenplot(sumUtilityWhitecat, sumUtilityWhitecase, sumUtilityNoregret);
-
+end

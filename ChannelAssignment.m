@@ -37,9 +37,9 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-runtimes =  20 ;  % number of simulation run
+runtimes =  2 ;  % number of simulation run
     n = 16;    % number of WBS
-    c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -111,7 +111,7 @@ B_noregret=[];
 lp_container=[];
 cvx_container=[];
 
-RetGUROBI_FCC = zeros(1, runtimes);
+RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for scheme II obtains solution.
 
 
 for run = 1: runtimes % the number of simulations
@@ -153,10 +153,11 @@ for run = 1: runtimes % the number of simulations
             cvx_container = [cvx_container, cvx];
 
 
-%   % plot the distibution of stations and nodes
-    [posET] = ETlocation(n, nET, lengthSide, coverage);
-    plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
-    %plotMaximalPower(P, n, c);
+% %% plot the distibution of stations and nodes
+%     [posET] = ETlocation(n, nET, lengthSide, coverage);
+%     plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
+%     %plotMaximalPower(P, n, c);
+
 
 % %% run channel assignment scheme I and comparison schemes
 %         [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
@@ -166,7 +167,8 @@ for run = 1: runtimes % the number of simulations
 %             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
 %             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
 %                 schemeIIEnabled, PMiu, POpertation, infBound, RetGUROBI_FCC);
-%% run channel assignment centralized scheme II
+
+%% run channel assignment scheme II
 
         [RetGUROBI_FCC] = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
