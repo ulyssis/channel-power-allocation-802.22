@@ -27,6 +27,9 @@ if(schemeIIEnabled)
             %% get B_scheme2Centralized
             % the n auxiliary variables
             ResultYSchemeII = opt2Results.x(n*c + 2*n^2*c +1: n*c + 2*n^2*c +n);   
+            if(nnz(ResultYSchemeII) > 0)
+                stop =1;
+            end
             % the n auxiliary variables
             ResultZSchemeII = opt2Results.x(n*c + 2*n^2*c +n+1: n*c + 2*n^2*c + 2*n);
 
@@ -45,20 +48,20 @@ if(schemeIIEnabled)
 
             B_scheme2Centralized = B;
     
-                        
+            
+            [resultedInterference, exceedInterferenceBound] = checkResultedInference(B_scheme2Centralized, n, m, GtildeAll, infBound);            
         else
                         RetGUROBI_FCC(run) = 0;
 
         end
         
 
-    
 
     
     
         
     
-    
+    SchemeIISolutionFlag = 0; % Todo: disable execution of scheme2distributed
         %% Scheme2Distributed
         %-------------------------------|
         %         scheme2distributed    |
@@ -112,9 +115,9 @@ if(schemeIIEnabled)
                 SINR_ETs_previous = SINRofETs;
             end
             
-%             if (updateCount>100)
-%                needchecking = 1;
-%             end
+            if (updateCount>10)
+               needchecking = 1;
+            end
 
             if (isequal(B, Bbackup))	           % B and B_backup(the previous B) are the same!
                 stop = 1;
