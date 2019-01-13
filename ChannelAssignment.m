@@ -37,8 +37,8 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-runtimes =  10 ;  % number of simulation run
-    n = 10;    % number of WBS
+runtimes =  10;  % number of simulation run
+    n = 16;    % number of WBS
     c = 3;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-12);   % Noise;untitled.eps
@@ -55,12 +55,12 @@ runtimes =  10 ;  % number of simulation run
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
     tic;
+    
 
-    PMiu = 1/100;
-    POpertation = 1/PMiu;
+    
     
     SUcellRadius = 3000;
-    schemeIIEnabled = 1;
+
     
 %for SUcellRadius = 0:1000:1000 % 1000:1000:7000
         
@@ -92,6 +92,18 @@ worstSINR_optimization_container = [];
 worstSINR_noregret_container = [];   
 worstSINR_PotentialGame_container = []; 
 
+
+    utilityHistoryFCC = [];
+    powerHistoryFCC = [];
+    averageSinrHistoryFCC = [];
+    averageStdHistoryFCC = [];
+    SINR_ETs_centralized_FCC_container = []; 
+    SINR_ETs_distributed_FCC_container = [];
+    fair_centralized_FCC_container = []; 
+    fair_distributed_FCC_container = [];
+    worstSINR_centralized_FCC_container = [];
+    worstSINR_distributed_FCC_container = [];
+
 convergenceStepWhitecat = zeros(1, runtimes);
 convergenceStepWhitecase = zeros(1, runtimes);
 convergenceStepNoregret = zeros(1, runtimes);
@@ -113,7 +125,25 @@ cvx_container=[];
 
 RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for scheme II obtains solution.
 
+    baseDir = '/Users/max/Documents/git_li/channel-power-allocation-802.22/';
+    FileNameSumUtilityScheme2distributed = fullfile(baseDir, 'sumUtilityScheme2distributed.csv');
+    delete(FileNameSumUtilityScheme2distributed);
 
+for POperation = 70:10:70
+    
+%     POperation = 80;
+    PMiu = 1/POperation;
+    
+    contains = dir(baseDir);
+    for k = 1:length(contains)
+        if (strcmp(contains(k).name, char("B_scheme2Centralized_POperation_" + POperation + ".csv")))
+            fullFileName = fullfile(baseDir, contains(k).name);
+            delete(fullFileName);
+        end
+    end
+ 
+  
+  
 for run = 1: runtimes % the number of simulations
     
 %         %% make sure that both LP and CVX are feasible
@@ -166,23 +196,44 @@ for run = 1: runtimes % the number of simulations
 %             = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
 %             averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
 %             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-%                 schemeIIEnabled, PMiu, POpertation, infBound, RetGUROBI_FCC);
+%                 PMiu, POperation, infBound, RetGUROBI_FCC);
 
 %% run channel assignment scheme II
 
-        [RetGUROBI_FCC] = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
-            averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-            SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-                schemeIIEnabled, PMiu, POpertation, infBound, RetGUROBI_FCC);
+ [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+    SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
+    worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container] = ...
+    runSchemesFCC(run, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, ...
+    utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+    SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
+    worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container,...
+    PMiu, POperation, infBound, RetGUROBI_FCC);
 
 
 end
 
-plotLog = SUcellRadius/100+10;
+plotLog = POperation;
 
 %% plot schemes
 
-        printplotsCAschemes2power(plotLog, n, nET, powerHistory, averageSinrHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container);        
+%         printplotsCAschemes1(plotLog, n, nET, ...
+%             powerHistory, averageSinrHistory, ...
+%             SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
+%             SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container); 
+        
+
+        printplotsCAschemes2(plotLog, n, nET, ...
+            utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, ...
+            SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container); 
+        
+        sumUtilityScheme2distributed = load('/Users/max/Documents/git_li/channel-power-allocation-802.22/sumUtilityScheme2distributed.csv');
+        figure(plotLog + 6);
+        handle1 = plot(sumUtilityScheme2distributed);
+        set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
+
+end     
+        
+        
 %         printplotsWorst20_CAschemes2power(plotLog, n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_optimization_container);
         
 %         % plot figures for only maximal power decision

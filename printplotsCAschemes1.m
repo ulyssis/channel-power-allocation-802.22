@@ -4,7 +4,7 @@
 %  output3: sinr on end users
 
 
-function printplotsCAschemes2power(plotLog, n, nET, powerHistory, averageSinrHistory, SINR_ETs_random, SINR_ETs_whitecat, SINR_ETs_whitecase, SINR_ETs_lindo, SINR_ETs_noregret, SINR_ETs_PotentialGame)
+function printplotsCAschemes1(plotLog, n, nET, powerHistory, averageSinrHistory, SINR_ETs_random, SINR_ETs_whitecat, SINR_ETs_whitecase, SINR_ETs_lindo, SINR_ETs_noregret, SINR_ETs_PotentialGame)
 % the latter snrRatio_random, snrRatio_whitecat, snrRatio_whitecase,
 % snrRatio_noregret are sinr on each WBS in the last run, which is a
 % intersection for sinr in one run
