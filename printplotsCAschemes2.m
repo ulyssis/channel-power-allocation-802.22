@@ -10,17 +10,56 @@ function printplotsCAschemes2(plotLog, n, nET, utilityHistoryFCC, powerHistoryFC
 % snrRatio_noregret are sinr on each WBS in the last run, which is a
 % intersection for sinr in one run
 
+
+x = [1, 2];
+
 %% Average Sinr
 figure(plotLog+0);
-handle1 = barweb(mean(averageSinrHistoryFCC,2)', 1.96*std(averageSinrHistoryFCC,1,2)'/sqrt(n), [], [], [], [], 'Average SINR (dB)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
-set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
+
+data = mean(averageSinrHistoryFCC,2)';
+errhigh = 1.96*std(averageSinrHistoryFCC,1,2)'/sqrt(n);
+errlow  = 1.96*std(averageSinrHistoryFCC,1,2)'/sqrt(n);
+
+width = 0.5; 
+barHandle = bar(x,data, width, 'FaceColor','flat');  
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
+xticks([1 2])
+xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+ylabel('Average QuasiSINR (dB)');
+
+hold on
+
+er = errorbar(x,data,errlow,errhigh);    
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';  
+
+set(gca,'fontsize',10);
+hold off
 
 %% Average Transmisson Power
 figure(plotLog+1);
-% use barweb function 
-% dbstop on error;
-handle1 = barweb(mean(powerHistoryFCC,2)', 1.96*std(powerHistoryFCC,1,2)'/sqrt(n), [], [], [], [], 'Average transmission power of each WBS (W)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
-set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
+
+data = mean(powerHistoryFCC,2)';
+errhigh = 1.96*std(powerHistoryFCC,1,2)'/sqrt(n);
+errlow  = 1.96*std(powerHistoryFCC,1,2)'/sqrt(n);
+
+width = 0.5;
+barHandle = bar(x,data, width, 'FaceColor','flat'); 
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
+xticks([1 2])
+xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+ylabel('Average transmission power of each WBS (W)');
+
+hold on
+
+er = errorbar(x,data,errlow,errhigh);    
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';  
+
+set(gca,'fontsize',10);
+hold off
 
 %% sumUtility
 figure(plotLog+2);
@@ -28,20 +67,14 @@ figure(plotLog+2);
 % delete the all zero colume.
 utilityHistoryFCC = utilityHistoryFCC(:, any(utilityHistoryFCC,1));
 
-handle1 = barweb(mean(utilityHistoryFCC,2)', 1.96*std(utilityHistoryFCC,1,2)'/sqrt(n), [], [], [], [], 'Sum of Utility of All WBSs', bone, 'y', {[' ']}, 2, 'plot'); %['Scheme II centralized'; 'Scheme II distributed']
-set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
-
-figure(plotLog*10+2);
-
-% delete the all zero colume.
-utilityHistoryFCC = utilityHistoryFCC(:, any(utilityHistoryFCC,1));
-
-%x = ['Scheme II centralized', 'Scheme II distributed'];
 data = mean(utilityHistoryFCC,2)';
 errhigh = 1.96*std(utilityHistoryFCC,1,2)'/sqrt(n);
 errlow  = 1.96*std(utilityHistoryFCC,1,2)'/sqrt(n);
 
-bar(x,data);  
+width = 0.5;
+barHandle = bar(x,data, width, 'FaceColor','flat');  
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
 xticklabels({'Scheme II centralized', 'Scheme II distributed'})
 ylabel('Sum of Utility of All WBSs');
@@ -58,10 +91,10 @@ hold off
 %% SINR cfg
 figure (plotLog+3)
     h1 = cdfplot(SINR_ETs_centralized_FCC_container);
-    set(h1, 'Color','k', 'LineStyle', '--');
+    set(h1, 'Color','r', 'LineStyle', '--');
     hold on
     h2 = cdfplot(SINR_ETs_distributed_FCC_container);
-    set(h2, 'Color','g', 'LineStyle', '-');
+    set(h2, 'Color','b', 'LineStyle', '-');
 
     
     axis([1 100 0 1]);
@@ -75,13 +108,36 @@ figure (plotLog+3)
     set(gca,'YLabel',[]);
     magnify;
    
-% %% SINR average overall all end users form all runs. should not be used.
-% figure (plotLog+4)
+    
+    
+    
+%% SINR average overall all end users form all runs. should not be used.
+figure (plotLog+4)
 % averageSINR = [mean(SINR_ETs_centralized_FCC_container), mean(SINR_ETs_distributed_FCC_container)];
 % stdSINR = [1.96*std(SINR_ETs_centralized_FCC_container,1)/sqrt(size(SINR_ETs_centralized_FCC_container, 2)), 1.96*std(SINR_ETs_distributed_FCC_container,1)/sqrt(size(SINR_ETs_distributed_FCC_container, 2))];
-% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB) (not useful)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
+% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
 % set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
 
+averageSINR = [mean(SINR_ETs_centralized_FCC_container), mean(SINR_ETs_distributed_FCC_container)];
+errhigh = [1.96*std(SINR_ETs_centralized_FCC_container,1)/sqrt(size(SINR_ETs_centralized_FCC_container, 2)), 1.96*std(SINR_ETs_distributed_FCC_container,1)/sqrt(size(SINR_ETs_distributed_FCC_container, 2))];
+errlow  = errhigh;
+
+width = 0.5;
+barHandle = bar(x,averageSINR, width, 'FaceColor','flat');  
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
+xticks([1 2])
+xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+ylabel('Average SINR on End Users over All Runs (dB)');
+
+hold on
+
+er = errorbar(x,averageSINR,errlow,errhigh);    
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';  
+
+set(gca,'fontsize',10);
+hold off
 
 %% SINR average on end users.
 
@@ -106,9 +162,24 @@ end
 average_SINR_ETs = [average_SINR_ETs_centralized_FCC_container ;
     average_SINR_ETs_distributed_FCC_container];
 
+data = mean(average_SINR_ETs,2)';
+errhigh = 1.96*std(average_SINR_ETs,1,2)'/sqrt(n);
+errlow  = 1.96*std(average_SINR_ETs,1,2)'/sqrt(n);
 
-handle1 = barweb(mean(average_SINR_ETs,2)', 1.96*std(average_SINR_ETs,1,2)'/sqrt(n), [], [], [], [], 'Average SINR on End Terminals (dB)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
-set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
+width = 0.5;
+barHandle = bar(x,data, width, 'FaceColor','flat');  
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
+xticks([1 2])
+xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+ylabel('Average SINR on End Terminals (dB)');
 
+hold on
 
+er = errorbar(x,data,errlow,errhigh);    
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';  
+
+set(gca,'fontsize',10);
+hold off
 
