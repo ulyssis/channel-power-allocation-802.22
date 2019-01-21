@@ -1,6 +1,6 @@
 % output B through no-regret learning
 % sumUtilityNoregret contains at most 1000*16 records
-function [B, sumUtilityNoregret, SINRvarianceNoregret] = noregretlearning(seq, B, P, Gtilde, GtildeETsSUs, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta)
+function [B, sumUtilityNoregret, SINRvarianceNoregret] = noregretlearning(seq, B, P, Gtilde, GtildeETsSUs, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, PMiu)
 % Reg_i(C x C): regret matrix for each user, update with matrix U
 % U(C x C): possible increase of utility, store intermidiate variables
 % Pr(C x 1): probability of swithching to new strategy based on regrets
@@ -34,7 +34,7 @@ Bconverge = 0;
            I(i) = col; 
         end
         
-    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
     sumUtilityNoregret = sumUtility;
 
     
@@ -77,7 +77,7 @@ while((~Bconverge) || (t<3))
         
         [row, previousAction] = max(Bbackup(i,:));
         if (I(i)~=previousAction)
-            [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+            [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
             sumUtilityNoregret(end+1) = sumUtility;
         else
             sumUtilityNoregret(end+1) = sumUtilityNoregret(end);

@@ -1,159 +1,32 @@
-       
-function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame, RetGUROBI_FCC] = ...
-    runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-    PMiu, POperation, infBound, RetGUROBI_FCC)
+function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
+    SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
+    B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
+    = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+    averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
+    SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu)
 
-% function [RetGUROBI_FCC] = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-%     schemeIIEnabled, PMiu, POperation, infBound, RetGUROBI_FCC)
 
 seq = randperm(n);
-SchemeIISolutionFlag = 0;
-%% scheme II
-if(schemeIIEnabled)
-    %% centralized
-    opt2Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
-
-        % -- to record how many times GUROBI returns solution.
-        resultStatus = strcmp(opt2Results.status, 'OPTIMAL');
-        if(resultStatus)
-            RetGUROBI_FCC(run) = 1;
-            SchemeIISolutionFlag = 1;
-                        
-            %% record how many times GUROBI returns solution
-            ResultXSchemeII = zeros(n, c);
-            for k=1:c
-                ResultXSchemeII(:, k) = opt2Results.x((k-1)*n + 1 : k*n)';
-            end
-            %% get B_scheme2Centralized
-            % the n auxiliary variables
-            ResultYSchemeII = opt2Results.x(n*c + 2*n^2*c +1: n*c + 2*n^2*c +n);   
-            if(nnz(ResultYSchemeII) > 0)
-                stop =1;
-            end
-            % the n auxiliary variables
-            ResultZSchemeII = opt2Results.x(n*c + 2*n^2*c +n+1: n*c + 2*n^2*c + 2*n);
-
-            synthesisSchemeII = zeros(1, n);
-
-            for i = 1:n
-                if(ResultYSchemeII(i) ~= ResultZSchemeII(i))
-                    synthesisSchemeII(i) = ResultYSchemeII(i)*PMiu +(1-ResultYSchemeII(i))*POperation;
-                else
-                    synthesisSchemeII(i) = PMiu;
-                end
-
-            end
-
-            B = ResultXSchemeII .* (synthesisSchemeII' * ones(1, c));
-
-            B_scheme2Centralized = B;
-    
-            
-            [resultedInterference, exceedInterferenceBound] = checkResultedInference(B_scheme2Centralized, n, m, GtildeAll, infBound);            
-        else
-                        RetGUROBI_FCC(run) = 0;
-
-        end
-        
-
-
-    
-    
-        
-    
-    SchemeIISolutionFlag = 0; % Todo: disable execution of scheme2distributed
-        %% Scheme2Distributed
-        %-------------------------------|
-        %         scheme2distributed    |
-        %-------------------------------|
-    if(SchemeIISolutionFlag) % only run scheme2distributed when scheme2centralized has solution.
-
+   %% random channel allocation
+   
+        % Initialize channels asignment randomly
         B = zeros(n, c);
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
-        recordPerf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
-        sumUtilityScheme2Distributed = [sumUtility];
-
-        stop = 0;
-        Bbackup = B;
-        updateCount = 0;
-        
-        % record the initial SINR for all SUs
-        SINRvarianceWhitecat = 0; % sum of variance for all WBS in the whole process of convergence
-        delta1step = 0;
-        SINR_ETs_previous = [];
-        SINRofETs = [];
-        [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
-        SINR_ETs_previous = SINRofETs;
-        
-        sumUtilityScheme2distributed = [];
-        while (stop == 0)
-            for i = 1: n
-                [B, updateFlag] = update_Scheme2Distributed(seq(i), B, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta, infBound, POperation);
-                updateCount = updateCount + updateFlag;
-                
-                if(updateFlag)  % there is a update
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
-                    sumUtilityScheme2distributed(end+1) = sumUtility; % record the trace of sum utility
-                    
-%                     % calculate the percentage of variance and sum up!
-%                     [SINRofETs, worstSINR, fairness] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);
-%                     if(size(SINRofETs)~= size(SINR_ETs_previous))
-%                         dimensionsNoagree = 1;
-%                     end
-%                     delta1step = sum(abs((SINRofETs - SINR_ETs_previous)./SINR_ETs_previous));
-                    
-                else
-                    sumUtilityScheme2distributed(end+1) = sumUtilityScheme2distributed(end);
+        doagain=1;
+            while (doagain)
+                for i = 1 : n
+                   B(i, :) = P((i-1)*c + floor((1+c * rand)), :);        
                 end
-                
-%                 SINRvarianceScheme2distributed = SINRvarianceScheme2distributed + delta1step;
-
-                if i == n   % calculate utility after dealing with su n's channel, record the utility after one round optimization
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
-                    recordPerf = [recordPerf; sumUtility, averageI, averageP, averageSINR, stdSINR];
+                doagain=0;
+                for i=1:c
+                   if (nnz(B(:,i))==1)
+                       doagain=1;
+                       break;
+                   end
                 end
-                SINR_ETs_previous = SINRofETs;
-            end
-            
-            if (updateCount>10)
-               needchecking = 1;
             end
 
-            if (isequal(B, Bbackup))	           % B and B_backup(the previous B) are the same!
-                stop = 1;
-            end
-            Bbackup = B; % Bbackup records the current B
-        end
+       initialB = B;       % record the initial B for selfishUpdate
 
-%         convergenceStepWhitecat(run) = size(sumUtilityScheme2distributed, 2);
-%         SINRvarianceWhitecat_container(run) = SINRvarianceWhitecat;
-        
-%         dica_perf = recordPerf(end, :);
-%         
-%         % check sinr on end users.
-%         SINR_ETs_Scheme2distributed = []; % there should be n*nET values
-%         %SINR_ETs_whitecat = SINR_ETs(posSU, posET, B, n, m, nET, TVpower, delta, SUcellRadius, coverage, pathlossfactor, s);
-%         [SINR_ETs_Scheme2distributed, worstSINR_Scheme2distributed, fair_Scheme2distributed] = SINR_ETs_cellReSelection(B, n, GtildeETsSUs, nET, TVpower, delta);        
-%         SINR_ETs_Scheme2distributed_container = [SINR_ETs_Scheme2distributed_container, SINR_ETs_Scheme2distributed];
-%         fair_Scheme2distributed_container = [fair_Scheme2distributed_container, fair_Scheme2distributed];
-%         worstSINR_Scheme2distributed_container = [worstSINR_Scheme2distributed_container, worstSINR_Scheme2distributed];
-%         
-% 
-%         disp('snrRatio_Scheme2Distributed:');
-%         snrRatio_dica = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
-        
-
-        B_Scheme2Distributed = B;
-
-    end
-else  %% the above codes execute scheme II, both centralized and distributed schemes.
-
-
-%% start here the channel allocation schemes for ECC (scheme I)
-
-
-        %%% Initialize channels asignment randomly
-        initialB = generateInitialChannelAllocationB_for_schemeI(n,c, P);
                     
         % check sinr on end users.
         SINR_ETs_random = []; % there should be n*nET values
@@ -163,12 +36,14 @@ else  %% the above codes execute scheme II, both centralized and distributed sch
         fair_random_container = [fair_random_container, fair_random];
         worstSINR_random_container = [worstSINR_random_container, worstSINR_random];
         
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
 
         random_perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         disp(':');        
         snrRatio_random = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
-        B_random = B;       
+        B_random = B;
+
         
 %         %-----------------------------------------------------------%
 %         %         optimation: channel allocation                   %
@@ -276,7 +151,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         resultX = reversedResultX';
         B= resultX.*condenseP;
 
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         GUROBI_Perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
 
         SINR_ETs_optimization = []; % there should be n*nET values
@@ -297,7 +172,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         %---------------------------|
 
         B = initialB;
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         recordPerf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         sumUtilityWhitecat = [sumUtility];
 
@@ -319,7 +194,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 updateCount = updateCount + updateFlag;
                 
                 if(updateFlag)  % there is a update
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     sumUtilityWhitecat(end+1) = sumUtility; % record the trace of sum utility
                     
                     % calculate the percentage of variance and sum up!
@@ -336,7 +211,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 SINRvarianceWhitecat = SINRvarianceWhitecat + delta1step;
 
                 if i == n   % calculate utility after dealing with su n's channel, record the utility after one round optimization
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     recordPerf = [recordPerf; sumUtility, averageI, averageP, averageSINR, stdSINR];
                 end
                 SINR_ETs_previous = SINRofETs;
@@ -382,7 +257,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         % sumUtilityWhitecase contains at most 1000*16 records
         B = initialB;
 
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         recordPerf_self = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         sumUtilityWhitecase = [sumUtility];
         
@@ -404,7 +279,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 [B, updateFlag] = selfishUpdate(seq(i), B, P, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta);
                 updateCount = updateCount + updateFlag;
                 if(updateFlag)
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     sumUtilityWhitecase(end+1) = sumUtility; % record the trace of sum utility
                 else
                     sumUtilityWhitecase(end+1) = sumUtilityWhitecase(end);
@@ -417,7 +292,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 SINRvarianceWhitecase = SINRvarianceWhitecase + delta1step;
                 
                 if i == n   % calculate utility after dealing with su n's channel, record the utility after one round optimization
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     recordPerf_self = [recordPerf_self;  sumUtility, averageI, averageP, averageSINR, stdSINR];
                 end
                 SINR_ETs_previous = SINRofETs;                
@@ -463,7 +338,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         sumUtilityNoregret = [];
 
        
-        [B, sumUtilityNoregret, SINRvarianceNoregret] = noregretlearning(seq, B, P, Gtilde, GtildeETsSUs, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta);
+        [B, sumUtilityNoregret, SINRvarianceNoregret] = noregretlearning(seq, B, P, Gtilde, GtildeETsSUs, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, PMiu);
         
         convergenceStepNoregret(run) = size(sumUtilityNoregret, 2);
         SINRvarianceNoregret_container(run) = SINRvarianceNoregret;      
@@ -479,7 +354,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         disp('snrRatio_noregret:');
         snrRatio_noregret = output(B, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);     % output quai SINR of all users
         
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         noregret_perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         
         B_noregret =B;
@@ -496,7 +371,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         %-------------------------------------------------------------------|
         B = initialB;
         powerLevels = 10;
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         recordPerf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         sumUtilityPotentialGame = [sumUtility];
 
@@ -519,7 +394,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 updateCount = updateCount + updateFlag;
                 
                 if(updateFlag)  % there is a update
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     sumUtilityPotentialGame(end+1) = sumUtility; % record the trace of sum utility
                     
                     % calculate the percentage of variance and sum up!
@@ -536,7 +411,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
                 SINRvariancePotentialGame = SINRvariancePotentialGame + delta1step;
 
                 if i == n   % calculate utility after dealing with su n's channel, record the utility after one round optimization
-                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor);
+                    [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
                     recordPerf = [recordPerf; sumUtility, averageI, averageP, averageSINR, stdSINR];
                 end
                 SINR_ETs_previous = SINRofETs;
@@ -574,28 +449,10 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         end
         B_PotentialGame = B;        
         %---------potential game ends!
-
-
-        %%
+%%
         
         utilityHistory(:, run) = [random_perf(1); dica_perf(1); selfishUpdate_perf(1); noregret_perf(1); GUROBI_Perf(1); PotentialGame_perf(1)];
         powerHistory(:, run) = [random_perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3); GUROBI_Perf(3); PotentialGame_perf(3)];
         averageSinrHistory(:, run) = [random_perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4); GUROBI_Perf(4); PotentialGame_perf(4)];
         averageStdHistory(:, run) = [random_perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5); GUROBI_Perf(5); PotentialGame_perf(5)];
-    
-        
-        
-%         %  with lindo
-%         utilityHistory(:, run) = [random_perf(1); GUROBI_Perf(1); dica_perf(1); selfishUpdate_perf(1); noregret_perf(1)];
-%         powerHistory(:, run) = [random_perf(3); GUROBI_Perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3)];
-%         averageSinrHistory(:, run) = [random_perf(4); GUROBI_Perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4)];
-%         averageStdHistory(:, run) = [random_perf(5); GUROBI_Perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5)];
-        
-%         % without Lindo
-%         % dica_perf contains: sumUtility, averageI, averageP, averageSINR, stdSINR
-%         powerHistory(:, run) = [random_perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3)];
-%         averageSinrHistory(:, run) = [random_perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4)];
-%         averageStdHistory(:, run) = [random_perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5)];
-        
-%        convergenplot(sumUtilityWhitecat, sumUtilityWhitecase, sumUtilityNoregret);
-end
+
