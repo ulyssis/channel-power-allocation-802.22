@@ -451,8 +451,8 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         %---------potential game ends!
 %%
         
-        utilityHistory(:, run) = [random_perf(1); dica_perf(1); selfishUpdate_perf(1); noregret_perf(1); GUROBI_Perf(1); PotentialGame_perf(1)];
-        powerHistory(:, run) = [random_perf(3); dica_perf(3); selfishUpdate_perf(3); noregret_perf(3); GUROBI_Perf(3); PotentialGame_perf(3)];
-        averageSinrHistory(:, run) = [random_perf(4); dica_perf(4); selfishUpdate_perf(4); noregret_perf(4); GUROBI_Perf(4); PotentialGame_perf(4)];
-        averageStdHistory(:, run) = [random_perf(5); dica_perf(5); selfishUpdate_perf(5); noregret_perf(5); GUROBI_Perf(5); PotentialGame_perf(5)];
+        utilityHistory(:, run) = [dica_perf(1); selfishUpdate_perf(1); noregret_perf(1); PotentialGame_perf(1); random_perf(1); GUROBI_Perf(1)];
+        powerHistory(:, run) = [dica_perf(3); selfishUpdate_perf(3); noregret_perf(3); PotentialGame_perf(3); random_perf(3); GUROBI_Perf(3)];
+        averageSinrHistory(:, run) = [dica_perf(4); selfishUpdate_perf(4); noregret_perf(4); PotentialGame_perf(4); random_perf(4); GUROBI_Perf(4)];
+        averageStdHistory(:, run) = [dica_perf(5); selfishUpdate_perf(5); noregret_perf(5); PotentialGame_perf(5); random_perf(5); GUROBI_Perf(5)];
 
