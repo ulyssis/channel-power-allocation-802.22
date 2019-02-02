@@ -11,9 +11,9 @@ function printplotsCAschemes1(plotLog, n, nET, powerHistory, averageSinrHistory,
 
 %% Average Sinr
 figure(plotLog+0);
-handle1 = barweb(mean(averageSinrHistory,2)', 1.96*std(averageSinrHistory,1,2)'/sqrt(n), [], [], [], [], 'Average QuasiSINR (dB)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'Noregret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
+handle1 = barweb(mean(averageSinrHistory,2)', 1.96*std(averageSinrHistory,1,2)'/sqrt(n), [], [], [], [], 'Average QuasiSINR (dB)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'No-Regret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
 plots=get(gca, 'Children');
-legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'Noregret Learning', 'WhiteCase','whiteCat'});
+legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'});
 set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
 ylim([min(min(mean(averageSinrHistory,2)' - 1.96*std(averageSinrHistory,1,2)'/sqrt(n)), 0) max(mean(averageSinrHistory,2)' + 1.96*std(averageSinrHistory,1,2)'/sqrt(n))]);
 %set(handle1.bars(1), 'FaceColor','r');
@@ -24,9 +24,9 @@ ylim([min(min(mean(averageSinrHistory,2)' - 1.96*std(averageSinrHistory,1,2)'/sq
 figure(plotLog+1);
 % use barweb function 
 % dbstop on error;
-handle1 = barweb(mean(powerHistory,2)', 1.96*std(powerHistory,1,2)'/sqrt(n), [], [], [], [], 'Average WBS Transmission Power (W)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'Noregret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
+handle1 = barweb(mean(powerHistory,2)', 1.96*std(powerHistory,1,2)'/sqrt(n), [], [], [], [], 'Average WBS Transmission Power (W)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'No-Regret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
 plots=get(gca, 'Children');
-legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'Noregret Learning', 'WhiteCase','whiteCat'});
+legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'});
 set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
  applyhatch(gcf,'|-+.\/');
 
@@ -55,7 +55,7 @@ figure (plotLog+3)
     yticks([0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1])
     yticklabels({'0','10%','20%','30%','40%','50%','60%', '70%', '80%', '90%', '100%'})
 
-    legend('Random Allocation', 'whiteCat', 'whiteCase', 'Noregret Learning', 'optimization', 'Potential Game', 'Location', 'southeast');
+    legend('Random Allocation', 'whiteCat', 'whiteCase', 'No-Regret Learning', 'optimization', 'Potential Game', 'Location', 'southeast');
    
     xlabel('SINR (dB)');
     set(gca,'YLabel',[]);
@@ -65,9 +65,9 @@ figure (plotLog+3)
 % figure (plotLog+4)
 % averageSINR = [mean(SINR_ETs_random), mean(SINR_ETs_whitecat), mean(SINR_ETs_whitecase), mean(SINR_ETs_noregret), mean(SINR_ETs_lindo), mean(SINR_ETs_PotentialGame)];
 % stdSINR = [1.96*std(SINR_ETs_random,1)/sqrt(size(SINR_ETs_random, 2)), 1.96*std(SINR_ETs_whitecat,1)/sqrt(size(SINR_ETs_whitecat, 2)), 1.96*std(SINR_ETs_whitecase,1)/sqrt(size(SINR_ETs_whitecase, 2)), 1.96*std(SINR_ETs_noregret,1)/sqrt(size(SINR_ETs_noregret, 2)), 1.96*std(SINR_ETs_lindo,1)/sqrt(size(SINR_ETs_lindo, 2)), 1.96*std(SINR_ETs_PotentialGame,1)/sqrt(size(SINR_ETs_PotentialGame, 2))];
-% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB) (not useful)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'Noregret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
+% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB) (not useful)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'No-Regret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
 % plots=get(gca, 'Children');
-% legend(plots(7:12), {'Potential Game', 'optimization', 'Noregret Learning', 'whiteCase','whiteCat', 'Random Allocation'});
+% legend(plots(7:12), {'Potential Game', 'optimization', 'No-Regret Learning', 'whiteCase','whiteCat', 'Random Allocation'});
 % set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
 %  applyhatch(gcf,'|-+.\/');
 
@@ -119,9 +119,9 @@ average_SINR_ETs = [average_SINR_ETs_whitecat;
 
 
 
-handle1 = barweb(mean(average_SINR_ETs,2)', 1.96*std(average_SINR_ETs,1,2)'/sqrt(n), [], [], [], [], 'Average SINR on End Terminals (dB)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'Noregret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
+handle1 = barweb(mean(average_SINR_ETs,2)', 1.96*std(average_SINR_ETs,1,2)'/sqrt(n), [], [], [], [], 'Average SINR on End Terminals (dB)', bone, 'y', {'Random Allocation'; 'whiteCat'; 'whiteCase'; 'No-Regret Learning' ; 'optimization'; 'Potential Game'}, 2, 'plot');
 plots=get(gca, 'Children');
-legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'Noregret Learning', 'WhiteCase', 'whiteCat'});
+legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase', 'whiteCat'});
 set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
 %set(lgnd, 'Box', 'off');
  applyhatch(gcf,'|-+.\/');

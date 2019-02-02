@@ -30,7 +30,7 @@
 
 % name of save fig:
 % ECC_n_c_infBound_SUcellRadius_maxP_miniP_runtimes
-% FCC_n_c_infBound_SUcellRadius_POperation_runtimes
+% FCC_n_c_infBound_SUcellRadius_POperation_maxP_miniP_runtimes
 
 close all;
 echo off;
@@ -46,11 +46,11 @@ savepath;
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
-    infBound = 1*10.^(-8);     % The interfernce threshold on PU contour  
+    infBound = 5*10.^(-8);     % The interfernce threshold on PU contour  
     TVpower = 0;
     pathlossfactor = 2;    
-    miniP = 1; % 36dbm, the minmum power for users
-    maxP = 20; % 46dbm
+    miniP = 1; % 30dbm, the minmum power for users
+    maxP = 20; % 43dbm
     nET = 10;  % number of endterminals in each WBS 
     s = 8; % set standard deviation
     coverage = lengthSide/4/2 * 0.7; % the maximal distance away from the WBS, whihc a terminal can have 
@@ -130,7 +130,7 @@ RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for
     FileNameSumUtilityScheme2distributed = fullfile(baseDir, 'sumUtilityScheme2distributed.csv');
     delete(FileNameSumUtilityScheme2distributed);
 
-for POperation = 10:10:10
+for POperation = 10:1:10
     
 %     POperation = 80;
     PMiu = 1/POperation;
