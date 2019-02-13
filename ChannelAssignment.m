@@ -40,20 +40,23 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  10;  % number of simulation run
-    n = 10;    % number of WBS
-    c = 3;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
+    runtimes =  5;  % number of simulation run
+    n = 16;    % number of WBS
+    c = 4;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
-    infBound = 5*10.^(-8);     % The interfernce threshold on PU contour  
+    infBound = 1*10.^(-7);     % The interfernce threshold on PU contour  
+    % working parameters:
+    % ECC, ie-7
+    % FCC, 1e-8
     TVpower = 0;
     pathlossfactor = 2;    
-    miniP = 1; % 30dbm, the minmum power for users
-    maxP = 20; % 43dbm
+    miniP = 1; % xx dbm, the minmum power for users, 30dbm - 1W
+    maxP = 10; % xx dbm
     nET = 10;  % number of endterminals in each WBS 
     s = 8; % set standard deviation
-    coverage = lengthSide/4/2 * 0.7; % the maximal distance away from the WBS, whihc a terminal can have 
+    coverage = lengthSide/4/2 * 0.8; % the maximal distance away from the WBS, whihc a terminal can have 
                                      % This value should consider SUcellRadius.
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
@@ -63,7 +66,7 @@ savepath;
 
     
     
-for SUcellRadius = 4000:1000:4000 % 1000:1000:7000
+for SUcellRadius = 5000:1000:5000 % 1000:1000:7000
         
         
 utilityHistory=[];
@@ -93,17 +96,17 @@ worstSINR_optimization_container = [];
 worstSINR_noregret_container = [];   
 worstSINR_PotentialGame_container = []; 
 
-
-    utilityHistoryFCC = [];
-    powerHistoryFCC = [];
-    averageSinrHistoryFCC = [];
-    averageStdHistoryFCC = [];
-    SINR_ETs_centralized_FCC_container = []; 
-    SINR_ETs_distributed_FCC_container = [];
-    fair_centralized_FCC_container = []; 
-    fair_distributed_FCC_container = [];
-    worstSINR_centralized_FCC_container = [];
-    worstSINR_distributed_FCC_container = [];
+NOperatingWBSs = [];
+utilityHistoryFCC = [];
+powerHistoryFCC = [];
+averageSinrHistoryFCC = [];
+averageStdHistoryFCC = [];
+SINR_ETs_centralized_FCC_container = []; 
+SINR_ETs_distributed_FCC_container = [];
+fair_centralized_FCC_container = []; 
+fair_distributed_FCC_container = [];
+worstSINR_centralized_FCC_container = [];
+worstSINR_distributed_FCC_container = [];
 
 convergenceStepWhitecat = zeros(1, runtimes);
 convergenceStepWhitecase = zeros(1, runtimes);
@@ -130,9 +133,8 @@ RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for
     FileNameSumUtilityScheme2distributed = fullfile(baseDir, 'sumUtilityScheme2distributed.csv');
     delete(FileNameSumUtilityScheme2distributed);
 
-for POperation = 10:1:10
+for POperation = 4:1:4
     
-%     POperation = 80;
     PMiu = 1/POperation;
     
     contains = dir(baseDir);
@@ -172,6 +174,14 @@ for run = 1: runtimes % the number of simulations
 %             lp = sum(P_LP,2);
 %             lp_container = [lp_container, lp];
 
+
+
+
+%%% plot the distibution of stations and nodes
+%     plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
+
+    if(runSchemesForECC)
+        
     %%---------- cvx ---------------
     %    decide the maximal transmission power by solving the convex problem with cvx 
     %    while loop is used to generate solution feasible topologies
@@ -182,12 +192,7 @@ for run = 1: runtimes % the number of simulations
         end
             cvx=sum(P_CVX,2);
             cvx_container = [cvx_container, cvx];
-
-
-%%% plot the distibution of stations and nodes
-%     plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
-
-    if(runSchemesForECC)
+            
     %% run channel assignment scheme I and comparison schemes, which are designed for FCC
             [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                 SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
@@ -197,11 +202,11 @@ for run = 1: runtimes % the number of simulations
                 SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu);
     else
     %% run channel assignment scheme II for FCC
-     [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+     [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
         SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
         worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container] = ...
         runSchemesFCC(run, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, ...
-        utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+        utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
         SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
         worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container,...
         PMiu, POperation, infBound, RetGUROBI_FCC);
@@ -222,7 +227,7 @@ plotLog = SUcellRadius/100;
     else
     %%      plots of schemII, both centralized and distributed
             printplotsCAschemes2(plotLog, n, nET, ...
-                utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, ...
+                utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, NOperatingWBSs, ...
                 SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container); 
 
     %% sumUtility of schemeII distributed.

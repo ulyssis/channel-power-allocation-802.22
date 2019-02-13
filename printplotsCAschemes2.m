@@ -4,7 +4,7 @@
 %  output3: sinr on end users
 
 
-function printplotsCAschemes2(plotLog, n, nET, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container)
+function printplotsCAschemes2(plotLog, n, nET, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, NOperatingWBSs, SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container)
 
 % the latter snrRatio_random, snrRatio_whitecat, snrRatio_whitecase,
 % snrRatio_noregret are sinr on each WBS in the last run, which is a
@@ -183,3 +183,29 @@ er.LineStyle = 'none';
 set(gca,'fontsize',10);
 hold off
 
+
+%% Number of working WBSs
+figure (plotLog+5)
+%NOperatingWBSs
+% delete the all zero colume.
+
+data = mean(NOperatingWBSs,2)';
+errhigh = 1.96*std(NOperatingWBSs,1,2)'/sqrt(n);
+errlow  = 1.96*std(NOperatingWBSs,1,2)'/sqrt(n);
+
+width = 0.5;
+barHandle = bar(x,data, width, 'FaceColor','flat');  
+barHandle.CData(1,:) = [1 0 0];
+barHandle.CData(2,:) = [0 0 1];
+xticks([1 2])
+xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+ylabel('Number of working WBSs');
+
+hold on
+
+er = errorbar(x,data,errlow,errhigh);    
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';  
+
+set(gca,'fontsize',10);
+hold off

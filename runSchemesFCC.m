@@ -1,16 +1,15 @@
 
 
-function [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+function [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
     SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
     worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container] = ...
     runSchemesFCC(run, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, ...
-    utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, ...
+    utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
     SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
     worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container,...
     PMiu, POperation, infBound, RetGUROBI_FCC)
 
 seq = randperm(n);
-SchemeIISolutionFlag = 0;
 B_scheme2Centralized = [];
 B_Scheme2Distributed = [];
 
@@ -19,11 +18,10 @@ B_Scheme2Distributed = [];
     %% centralized
     opt2Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
 
-        % -- to record how many times GUROBI returns solution.
-        resultStatus = strcmp(opt2Results.status, 'OPTIMAL');
+        resultStatus = strcmp(opt2Results.status, 'OPTIMAL'); % return value 1: two inputs equal
+                                                                %            0: inequal
         if(resultStatus)
             RetGUROBI_FCC(run) = 1;
-            SchemeIISolutionFlag = 1;
                         
             %% record how many times GUROBI returns solution
             ResultXSchemeII = zeros(n, c);
@@ -79,6 +77,7 @@ B_Scheme2Distributed = [];
 
             [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B_scheme2Centralized, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
 
+            NOperatingWBSs_centralized = nnz(sum(B, 2) > PMiu);
             centralized_FCC_perf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
             disp(':');        
             snrRatio_centralized_FCC = output(B_scheme2Centralized, Gtilde, GtildeAll, n, m, TVpower, SUcellRadius, delta, pathlossfactor);    % output quai SINR of all users
@@ -92,7 +91,7 @@ B_Scheme2Distributed = [];
         %-------------------------------|
         %         scheme2distributed    |
         %-------------------------------|
-    if(SchemeIISolutionFlag) % only run scheme2distributed when scheme2centralized has solution.
+    if(resultStatus) % only run scheme2distributed when scheme2centralized has solution.
 
         B = zeros(n, c);
         recordPerf = [];
@@ -162,7 +161,7 @@ B_Scheme2Distributed = [];
         else
             dlmwrite("/Users/max/Documents/git_li/channel-power-allocation-802.22/B_scheme2Distributed_POperation_" + POperation + ".csv", B_Scheme2Distributed);
         end
-        
+        NOperatingWBSs_distributed = nnz(sum(B, 2) > PMiu);
         %% obtain performance of distributed scheme
         % check sinr on end users.
         SINR_ETs_distributed_FCC = []; % there should be n*nET values
@@ -183,6 +182,10 @@ B_Scheme2Distributed = [];
         powerHistoryFCC(:, run) = [centralized_FCC_perf(3); distributed_FCC_perf(3)];
         averageSinrHistoryFCC(:, run) = [centralized_FCC_perf(4); distributed_FCC_perf(4)];
         averageStdHistoryFCC(:, run) = [centralized_FCC_perf(5); distributed_FCC_perf(5)];
+        NOperatingWBSs(:, run) = [NOperatingWBSs_centralized; NOperatingWBSs_distributed];
+        
+        
+        
 
     end
 
