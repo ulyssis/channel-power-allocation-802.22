@@ -1,7 +1,7 @@
 function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
     B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
-    = runSchemes(signleChannel, run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+    = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
     averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu)
 
@@ -136,13 +136,8 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         optimizaionModel1.obj = NoisePowerRatioInOneRow;
         
         optimizaionModel1.A = sparse(A);
-        if(signleChannel)
-            optimizaionModel1.rhs = ones(1, n);
-            optimizaionModel1.sense = '=';
-        else
-            optimizaionModel1.rhs = c*ones(1, n);
-            optimizaionModel1.sense = '=';
-        end
+        optimizaionModel1.rhs = ones(1, n);
+        optimizaionModel1.sense = '=';
         optimizaionModel1.vtype = 'B';
         %optimizaionModel1.modelsense = 'min';
         opt1Results = gurobi(optimizaionModel1);
