@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  1;  % number of simulation run
+    runtimes =  50;  % number of simulation run
     n = 16;    % number of WBS
     %c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     %m = c;     % number of primary users, with the same number of channels 
@@ -63,8 +63,10 @@ savepath;
     runSchemesForECC = 1;
     tic;
     
-averageDataOverNumOfChannels = [];
+averagePowerOverNumOfChannels = [];
+averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
+averageETSINRCIOverNumOfChannels = [];
 
 for c = 2:1:5    
     m = c;
@@ -249,30 +251,48 @@ for c = 2:1:5
     end
 
 % averageDataOverNumOfChannels:
-averageDataOverNumOfChannels = [averageDataOverNumOfChannels, [mean(powerHistory,2)'; 1.96*std(powerHistory,1,2)'/sqrt(n)]];
-averageETSINROverNumOfChannels = [averageETSINROverNumOfChannels, [mean(SINR_ETs,2)'; 1.96*std(average_SINR_ETs,1,2)'/sqrt(n*nET)]];
+averagePowerOverNumOfChannels = [averagePowerOverNumOfChannels, mean(powerHistory,2)];
+averagePowerCIOverNumOfChannels = [averagePowerCIOverNumOfChannels, 1.96*std(powerHistory,1,2)/sqrt(n)];
+
+averageETSINROverNumOfChannels = [averageETSINROverNumOfChannels, mean(averageSinrHistory,2)];
+averageETSINRCIOverNumOfChannels = [averageETSINRCIOverNumOfChannels, 1.96*std(averageSinrHistory,1,2)/sqrt(n*nET)];
 
 end
 
 % plot averageDataOverNumOfChannels and averageDataOverNumOfChannels
 
 %% Average Transmisson Power
-figure(c*10 + 1);
+figure(c*10 + 6);
+h = gobjects(size(averagePowerOverNumOfChannels, 1),1);
+for i = 1: size(averagePowerOverNumOfChannels, 1)
+    x = [2+0.03*i: 1 :c+0.03*i];
+    y = averagePowerOverNumOfChannels(i, :);
+    err = averagePowerCIOverNumOfChannels(i, :);
+    h(i) = errorbar(x,y,err);
+    hold on;
+end
+legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
+xticks(2:1:5);
+xlabel('Number of Available Channels');
+ylabel('Average Tx Power');
+applyhatch(gcf,'|-+.\/');
 
-% x = 1:10:100;
-% y = [20 30 45 40 60 65 80 75 95 90];
-% err = 8*ones(size(y));
-% errorbar(x,y,err)
-x = [2:1:c];
-y = averageDataOverNumOfChannels(1, :);
-err = averageDataOverNumOfChannels(2, :);
-errorbar(x,y,err);
 
-plots=get(gca, 'Children');
-legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'});
-set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
- applyhatch(gcf,'|-+.\/');
-
+%% Average SINR
+figure(c*10 + 7);
+h = gobjects(size(averageETSINROverNumOfChannels, 1),1);
+for i = 1: size(averageETSINROverNumOfChannels, 1)
+    x = [2+0.03*i: 1 :c+0.03*i];
+    y = averageETSINROverNumOfChannels(i, :);
+    err = averageETSINRCIOverNumOfChannels(i, :);
+    h(i) = errorbar(x,y,err);
+    hold on;
+end
+legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
+xticks(2:1:5);
+xlabel('Number of available channels');
+ylabel('Average SINR on End Terminals');
+applyhatch(gcf,'|-+.\/');
 
 % %         % Record the sum of utility in the converging
 % %         % process in one run
