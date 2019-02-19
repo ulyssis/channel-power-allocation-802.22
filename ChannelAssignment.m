@@ -60,7 +60,7 @@ savepath;
                                      % This value should consider SUcellRadius.
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
-    runSchemesForECC = 1;
+    runSchemesForECC = 0;
     tic;
     
 averagePowerOverNumOfChannels = [];
@@ -151,33 +151,6 @@ for c = 2:1:5
 
 
     for run = 1: runtimes % the number of simulations
-
-    %         %% make sure that both LP and CVX are feasible
-    %         linprogWork = -2;
-    %         max_cvx_statusMsg =2;
-    %         while (linprogWork <= 0 && max_cvx_statusMsg > 1)
-    %             [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
-    %             [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
-    %             [P_CVX, max_cvx_statusMsg] = maximalPowerPlanningCVX(n, m, infBound, GtildeAll, miniP, maxP);
-    %         end
-    %         
-    %         lp = sum(P_LP,2);
-    %         lp_container = [lp_container, lp];
-
-
-        %%---------- LP ---------------    
-        %   decide the maximal transmission power by solving the Linear problem with matlab.
-        %   'while' loop is used to generate solution feasible topologies  
-
-    %         linprogWork = -2;
-    %         while (linprogWork <= 0)
-    %             [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
-    %             [P_LP, linprogWork] = maximalPowerPlanningLP(n, m, infBound, GtildeAll, miniP, maxP);      % The fixed power levels on all channels for every node.
-    %         end
-    %             lp = sum(P_LP,2);
-    %             lp_container = [lp_container, lp];
-
-
 
 
     %% plot the distibution of stations and nodes
