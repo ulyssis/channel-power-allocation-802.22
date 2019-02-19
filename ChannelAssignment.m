@@ -196,7 +196,7 @@ for c = 2:1:5
                 cvx=sum(P_CVX,2);
                 cvx_container = [cvx_container, cvx];
 
-        %% run channel assignment scheme I and comparison schemes, which are designed for FCC
+                %% run channel assignment scheme I and comparison schemes, which are designed for FCC
                 [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
                     B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
@@ -250,50 +250,52 @@ for c = 2:1:5
     %         worst20(n, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_optimization_container2);
     end
 
-% averageDataOverNumOfChannels:
-averagePowerOverNumOfChannels = [averagePowerOverNumOfChannels, mean(powerHistory,2)];
-averagePowerCIOverNumOfChannels = [averagePowerCIOverNumOfChannels, 1.96*std(powerHistory,1,2)/sqrt(n)];
+    if(runSchemesForECC)
+        % averageDataOverNumOfChannels:
+        averagePowerOverNumOfChannels = [averagePowerOverNumOfChannels, mean(powerHistory,2)];
+        averagePowerCIOverNumOfChannels = [averagePowerCIOverNumOfChannels, 1.96*std(powerHistory,1,2)/sqrt(n)];
 
-averageETSINROverNumOfChannels = [averageETSINROverNumOfChannels, mean(averageSinrHistory,2)];
-averageETSINRCIOverNumOfChannels = [averageETSINRCIOverNumOfChannels, 1.96*std(averageSinrHistory,1,2)/sqrt(n*nET)];
-
+        averageETSINROverNumOfChannels = [averageETSINROverNumOfChannels, mean(averageSinrHistory,2)];
+        averageETSINRCIOverNumOfChannels = [averageETSINRCIOverNumOfChannels, 1.96*std(averageSinrHistory,1,2)/sqrt(n*nET)];
+    end
 end
 
-% plot averageDataOverNumOfChannels and averageDataOverNumOfChannels
 
-%% Average Transmisson Power
-figure(c*10 + 6);
-h = gobjects(size(averagePowerOverNumOfChannels, 1),1);
-for i = 1: size(averagePowerOverNumOfChannels, 1)
-    x = [2+0.03*i: 1 :c+0.03*i];
-    y = averagePowerOverNumOfChannels(i, :);
-    err = averagePowerCIOverNumOfChannels(i, :);
-    h(i) = errorbar(x,y,err);
-    hold on;
+%% plot averageDataOverNumOfChannels and averageDataOverNumOfChannels
+if(runSchemesForECC)
+    % Average Transmisson Power
+    figure(c*10 + 6);
+    h = gobjects(size(averagePowerOverNumOfChannels, 1),1);
+    for i = 1: size(averagePowerOverNumOfChannels, 1)
+        x = [2+0.03*i: 1 :c+0.03*i];
+        y = averagePowerOverNumOfChannels(i, :);
+        err = averagePowerCIOverNumOfChannels(i, :);
+        h(i) = errorbar(x,y,err);
+        hold on;
+    end
+    legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
+    xticks(2:1:5);
+    xlabel('Number of Available Channels');
+    ylabel('Average Tx Power');
+    applyhatch(gcf,'|-+.\/');
+
+
+    % Average SINR
+    figure(c*10 + 7);
+    h = gobjects(size(averageETSINROverNumOfChannels, 1),1);
+    for i = 1: size(averageETSINROverNumOfChannels, 1)
+        x = [2+0.03*i: 1 :c+0.03*i];
+        y = averageETSINROverNumOfChannels(i, :);
+        err = averageETSINRCIOverNumOfChannels(i, :);
+        h(i) = errorbar(x,y,err);
+        hold on;
+    end
+    legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
+    xticks(2:1:5);
+    xlabel('Number of available channels');
+    ylabel('Average SINR on End Terminals');
+    applyhatch(gcf,'|-+.\/');
 end
-legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-xticks(2:1:5);
-xlabel('Number of Available Channels');
-ylabel('Average Tx Power');
-applyhatch(gcf,'|-+.\/');
-
-
-%% Average SINR
-figure(c*10 + 7);
-h = gobjects(size(averageETSINROverNumOfChannels, 1),1);
-for i = 1: size(averageETSINROverNumOfChannels, 1)
-    x = [2+0.03*i: 1 :c+0.03*i];
-    y = averageETSINROverNumOfChannels(i, :);
-    err = averageETSINRCIOverNumOfChannels(i, :);
-    h(i) = errorbar(x,y,err);
-    hold on;
-end
-legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-xticks(2:1:5);
-xlabel('Number of available channels');
-ylabel('Average SINR on End Terminals');
-applyhatch(gcf,'|-+.\/');
-
 % %         % Record the sum of utility in the converging
 % %         % process in one run
 % %         % how to use it: set a breakpoint in the end of function
