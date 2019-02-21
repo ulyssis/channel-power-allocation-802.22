@@ -13,7 +13,7 @@ seq = randperm(n);
 B_scheme2Centralized = [];
 B_Scheme2Distributed = [];
 
-%% scheme II
+%% scheme II for FCC
 
     %% centralized
     opt2Results = solveSchmeIIwithGORUBI(Gtilde, n, c, GtildeAll, delta, PMiu, POperation, infBound);
@@ -87,7 +87,7 @@ B_Scheme2Distributed = [];
     
         
     
-        %% Scheme2Distributed
+        %% Scheme2Distributed for FCC
         %-------------------------------|
         %         scheme2distributed    |
         %-------------------------------|

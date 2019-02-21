@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  50;  % number of simulation run
+    runtimes =  5;  % number of simulation run
     n = 16;    % number of WBS
     %c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     %m = c;     % number of primary users, with the same number of channels 
@@ -68,7 +68,7 @@ averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
 averageETSINRCIOverNumOfChannels = [];
 
-for c = 2:1:5    
+for c = 5:1:5   
     m = c;
     for SUcellRadius = 3000:1000:3000 % 1000:1000:7000
 
