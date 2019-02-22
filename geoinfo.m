@@ -1,4 +1,5 @@
-% generate location permitting fesible solutions of LP or cvx
+% generate location of DTT, WBS and terminals, and the attenuation among
+% them
 function [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s)
 
 

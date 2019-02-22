@@ -50,7 +50,7 @@ barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
 xticklabels({'Scheme II centralized', 'Scheme II distributed'})
-ylabel('Average transmission power of each WBS (W)');
+ylabel('Average Transmission Power of WBS (W)');
 
 hold on
 
@@ -128,7 +128,7 @@ barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
 xticklabels({'Scheme II centralized', 'Scheme II distributed'})
-ylabel('Average SINR on End Users over All Runs (dB)');
+ylabel('Average SINR on End Users (dB)'); % over All Runs 
 
 hold on
 
@@ -199,7 +199,7 @@ barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
 xticklabels({'Scheme II centralized', 'Scheme II distributed'})
-ylabel('Number of working WBSs');
+ylabel('Number of Operating WBSs');
 
 hold on
 

@@ -40,13 +40,13 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  5;  % number of simulation run
+    runtimes =  10;  % number of simulation run
     n = 16;    % number of WBS
     %c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     %m = c;     % number of primary users, with the same number of channels 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
-    infBound = 5*10.^(-8);     % The interfernce threshold on PU contour  
+    infBound = 3*10.^(-9);     % The interfernce threshold on PU contour  
     % working parameters:
     % ECC, ie-7
     % FCC, 1e-8
@@ -176,9 +176,11 @@ for c = 5:1:5
                     = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
                     averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu);
-        else
+        else            
         %% run channel assignment scheme II for FCC
-         [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
+        [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
+         
+        [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
             SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container, fair_centralized_FCC_container, fair_distributed_FCC_container, ...
             worstSINR_centralized_FCC_container, worstSINR_distributed_FCC_container] = ...
             runSchemesFCC(run, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, ...
