@@ -34,7 +34,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
 
 %% Average Transmisson Power
@@ -58,7 +58,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
 
 %% sumUtility
@@ -85,7 +85,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
 
 %% SINR cfg
@@ -106,6 +106,7 @@ figure (plotLog+3)
    
     xlabel('SINR (dB)');
     set(gca,'YLabel',[]);
+    set(gca,'FontSize',12);
     magnify;
    
     
@@ -136,7 +137,7 @@ er = errorbar(x,averageSINR,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
 
 %% SINR average on end users.
@@ -180,7 +181,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
 
 
@@ -207,5 +208,5 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'fontsize',10);
+set(gca,'FontSize',12);
 hold off
