@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  50;  % number of simulation run
+    runtimes =  100;  % number of simulation run
     n = 16;    % number of WBS
     %c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
     %m = c;     % number of primary users, with the same number of channels 
@@ -60,7 +60,7 @@ savepath;
                                      % This value should consider SUcellRadius.
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
-    runSchemesForECC = 0;
+    runSchemesForECC = 1;
     tic;
     
 averagePowerOverNumOfChannels = [];
