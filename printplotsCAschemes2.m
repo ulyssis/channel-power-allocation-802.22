@@ -25,7 +25,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Average QuasiSINR (dB)');
 
 hold on
@@ -49,7 +49,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Average Transmission Power of WBS (W)');
 
 hold on
@@ -76,7 +76,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Sum of Utility of All WBSs');
 
 hold on
@@ -102,7 +102,7 @@ figure (plotLog+3)
     yticks([0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1])
     yticklabels({'0','10%','20%','30%','40%','50%','60%', '70%', '80%', '90%', '100%'})
 
-    legend('Scheme II centralized', 'Scheme II distributed', 'Location', 'southeast');
+    legend('Centralized Optimization', 'Distributed Scheme', 'Location', 'southeast');
    
     xlabel('SINR (dB)');
     set(gca,'YLabel',[]);
@@ -116,7 +116,7 @@ figure (plotLog+3)
 figure (plotLog+4)
 % averageSINR = [mean(SINR_ETs_centralized_FCC_container), mean(SINR_ETs_distributed_FCC_container)];
 % stdSINR = [1.96*std(SINR_ETs_centralized_FCC_container,1)/sqrt(size(SINR_ETs_centralized_FCC_container, 2)), 1.96*std(SINR_ETs_distributed_FCC_container,1)/sqrt(size(SINR_ETs_distributed_FCC_container, 2))];
-% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB)', bone, 'y', {'Scheme II centralized'; 'Scheme II distributed'}, 2, 'plot');
+% handle1 = barweb(averageSINR, stdSINR, [], [], [], [], 'Average SINR on End Users over All Runs (dB)', bone, 'y', {'Centralized Optimization'; 'Distributed Scheme'}, 2, 'plot');
 % set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
 
 averageSINR = [mean(SINR_ETs_centralized_FCC_container), mean(SINR_ETs_distributed_FCC_container)];
@@ -128,7 +128,7 @@ barHandle = bar(x,averageSINR, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Average SINR on End Users (dB)'); % over All Runs 
 
 hold on
@@ -172,7 +172,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Average SINR on End Terminals (dB)');
 
 hold on
@@ -199,7 +199,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Scheme II centralized', 'Scheme II distributed'})
+xticklabels({'Centralized Optimization', 'Distributed Scheme'})
 ylabel('Number of Operating WBSs');
 
 hold on
