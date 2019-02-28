@@ -249,8 +249,10 @@ if(runSchemesForECC)
     legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(2:1:5);
     xlabel('Number of Available Channels');
-    ylabel('Average Tx Power');
+    ylabel('Average Transmission Power (Watts)');
     applyhatch(gcf,'|-+.\/');
+    set(gca,'FontSize',16);
+
 
 
     % Average SINR
@@ -265,9 +267,10 @@ if(runSchemesForECC)
     end
     legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(2:1:5);
-    xlabel('Number of available channels');
+    xlabel('Number of Available Channels');
     ylabel('Average SINR on End Terminals');
     applyhatch(gcf,'|-+.\/');
+    set(gca,'FontSize',16);
 end
 % %         % Record the sum of utility in the converging
 % %         % process in one run

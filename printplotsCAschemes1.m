@@ -19,7 +19,7 @@ ylim([min(min(mean(averageSinrHistory,2)' - 1.96*std(averageSinrHistory,1,2)'/sq
 %set(handle1.bars(1), 'FaceColor','r');
 %set(handle1.bars(1), 'LineStyle','--');
  applyhatch(gcf,'|-+.\/');
-
+set(gca,'FontSize',16);
 %% Average Transmisson Power
 figure(plotLog+1);
 % use barweb function 
@@ -29,6 +29,7 @@ plots=get(gca, 'Children');
 legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'});
 set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
  applyhatch(gcf,'|-+.\/');
+ set(gca,'FontSize',16);
 
 %% SINR cfg
 figure (plotLog+3)
@@ -60,7 +61,7 @@ figure (plotLog+3)
     xlabel('SINR (dB)');
     set(gca,'YLabel',[]);
     magnify;
-   
+   set(gca,'FontSize',16);
 % %% SINR average overall all end users form all runs. should not be used.
 % figure (plotLog+4)
 % averageSINR = [mean(SINR_ETs_random), mean(SINR_ETs_whitecat), mean(SINR_ETs_whitecase), mean(SINR_ETs_noregret), mean(SINR_ETs_lindo), mean(SINR_ETs_PotentialGame)];
@@ -132,5 +133,5 @@ legend(plots(7:12), {'Optimization', 'Random Allocation', 'Potential Game', 'No-
 set(handle1.legend,'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
 %set(lgnd, 'Box', 'off');
  applyhatch(gcf,'|-+.\/');
-
+set(gca,'FontSize',16);
 
