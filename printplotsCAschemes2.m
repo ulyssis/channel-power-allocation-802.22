@@ -24,8 +24,10 @@ width = 0.5;
 barHandle = bar(x,data, width, 'FaceColor','flat');  
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
-xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticks([1 2]);
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'});
+%ax = gca;
+%ax.FontSize = 20; 
 ylabel('Average QuasiSINR (dB)');
 
 hold on
@@ -34,7 +36,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
 
 %% Average Transmisson Power
@@ -48,9 +50,10 @@ width = 0.5;
 barHandle = bar(x,data, width, 'FaceColor','flat'); 
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
-xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticks([1 2]);
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'});
 ylabel('Average Transmission Power of WBS (W)');
+
 
 hold on
 
@@ -58,7 +61,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
 
 %% sumUtility
@@ -76,7 +79,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'})
 ylabel('Sum of Utility of All WBSs');
 
 hold on
@@ -85,7 +88,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
 
 %% SINR cfg
@@ -102,11 +105,11 @@ figure (plotLog+3)
     yticks([0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1])
     yticklabels({'0','10%','20%','30%','40%','50%','60%', '70%', '80%', '90%', '100%'})
 
-    legend('Centralized Optimization', 'Distributed Scheme', 'Location', 'southeast');
+    legend('Centralized Optimization        ', '        Distributed Scheme', 'Location', 'southeast');
    
     xlabel('SINR (dB)');
     set(gca,'YLabel',[]);
-    set(gca,'FontSize',12);
+    set(gca,'FontSize',16);
     magnify;
    
     
@@ -128,7 +131,7 @@ barHandle = bar(x,averageSINR, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'})
 ylabel('Average SINR on End Users (dB)'); % over All Runs 
 
 hold on
@@ -137,7 +140,7 @@ er = errorbar(x,averageSINR,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
 
 %% SINR average on end users.
@@ -172,7 +175,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'})
 ylabel('Average SINR on End Terminals (dB)');
 
 hold on
@@ -181,7 +184,7 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
 
 
@@ -199,7 +202,7 @@ barHandle = bar(x,data, width, 'FaceColor','flat');
 barHandle.CData(1,:) = [1 0 0];
 barHandle.CData(2,:) = [0 0 1];
 xticks([1 2])
-xticklabels({'Centralized Optimization', 'Distributed Scheme'})
+xticklabels({'Centralized Optimization        ', '        Distributed Scheme'})
 ylabel('Number of Operating WBSs');
 
 hold on
@@ -208,5 +211,5 @@ er = errorbar(x,data,errlow,errhigh);
 er.Color = [0 0 0];                            
 er.LineStyle = 'none';  
 
-set(gca,'FontSize',12);
+set(gca,'FontSize',16);
 hold off
