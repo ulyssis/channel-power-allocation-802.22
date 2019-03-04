@@ -268,7 +268,7 @@ if(runSchemesForECC)
     legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(2:1:5);
     xlabel('Number of Available Channels');
-    ylabel('Average SINR on End Terminals');
+    ylabel('Average SINR on End Terminals (dB)');
     applyhatch(gcf,'|-+.\/');
     set(gca,'FontSize',16);
 end
