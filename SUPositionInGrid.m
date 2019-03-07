@@ -1,5 +1,5 @@
-% Creat a grid, and randomly locate the SUs on the grid points. The grid is a 10 x 10 area, maximal containing nodes: 100
-% without location shuff, the suqence of user 1 to user n is up-right.
+% Creat a grid, and randomly locate the SUs on the grid points. The grid is maximal 10 x 10 area
+% without location schufful, the suqence of user 1 to user n is up-right.
 function [pos, posET] = SUPositionInGrid(n, nET, lengthSide, coverage)
 
     for sth = 1: 10
@@ -21,34 +21,33 @@ function [pos, posET] = SUPositionInGrid(n, nET, lengthSide, coverage)
        end
     end
     
-% when n ~=x^2, then choose n columns.
-    for i=1:scale- n
+% when n ~= scale1^2, the following section is executed
+% choose scale1^2 - n columns to delete.
+    for i=1:scale - n
         column2delete = floor(rand(1)*size(pos,2))+1;
         pos(:, column2delete) =[];
     end
-%     shuffledpPos = pos(:,randperm(size(pos, 2)));
-%     pos = shuffledpPos(:, 1:n);
 
 
-% % the following realize random distribution of ETs around each SU
-% posET = [];
-% for i=1:n
-%     x1 = pos(1,i);
-%     y1 = pos(2,i);
-%     posETs = [];
-%     for t = 1: nET % loop until doing nET points inside the circle
-%         [x y] = cirrdnPJ(x1,y1, coverage);
-%     %     plot(x,y,'x');
-%         posETs = [posETs, [x;y]];
-%     end % generate ETs for one WBS cell
-%     
-%     posET = [posET, posETs];
-%     
-% end
-
-% the following realize random distribution of ETs in the square area A
-posET=zeros(2, n*nET);
-for i= 1: n*nET
-    posET(1, i) = rand*lengthSide;
-    posET(2, i) = rand*lengthSide;
+% random distribution of ETs within each cell.
+posET = [];
+for i=1:n
+    x1 = pos(1,i);
+    y1 = pos(2,i);
+    posETs = [];
+    for t = 1: nET % loop until doing nET points inside the circle
+        [x, y] = cirrdnPJ(x1,y1, coverage);
+    %     plot(x,y,'x');
+        posETs = [posETs, [x;y]];
+    end % generate ETs for one WBS cell
+    
+    posET = [posET, posETs];
+    
 end
+
+% % random distribution of ETs in the whole simulation area
+% posET=zeros(2, n*nET);
+% for i= 1: n*nET
+%     posET(1, i) = rand*lengthSide;
+%     posET(2, i) = rand*lengthSide;
+% end

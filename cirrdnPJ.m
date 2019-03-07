@@ -15,7 +15,7 @@
 
 
 % square distribution
-function [x y] = cirrdnPJ(x1,y1,rc)
+function [x, y] = cirrdnPJ(x1,y1,rc)
 
 a = rc*(2*rand-1);
 x = x1 + a;
