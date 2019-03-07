@@ -4,9 +4,9 @@
 % distributed greedy search, feedback infomation is used in the utility
 % each user looks for the channel to minimize its utility.
 % 4 schemes: 'random', 'update' and 'selfishUpdate', 'noregret'. 
-% Di Li & James Gross, Di Li, 28/10/11
-% Di Li,               Di Li, 28/8/18
-
+% Di Li & James Gross,              28/10/11
+% Di Li FCC Schemes                 28/8/18
+% Di Li multiple channel            05/03/19
 
 % utility fucntion: U = f_i/P_i + \sum (f_{ij}/P_j), where f is the
 % interferece, P_i is the transmission power, Channel c is ommited here for clearity.
@@ -42,14 +42,10 @@ savepath;
 
     runtimes =  100;  % number of simulation run
     n = 16;    % number of WBS
-    %c = 5;     % number of channels, remeber to modify cvx_statusMsg whose length should be c. 
-    %m = c;     % number of primary users, with the same number of channels 
+    w = 2;     % number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
     infBound = 5*10.^(-8);     % The interfernce threshold on PU contour  
-    % working parameters:
-    % ECC, ie-7
-    % FCC, 1e-8
     TVpower = 0;
     pathlossfactor = 2;    
     miniP = 1; % xx dbm, the minmum power for users, 30dbm - 1W
@@ -68,9 +64,9 @@ averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
 averageETSINRCIOverNumOfChannels = [];
 
-for c = 2:1:5    
+for c = 5:1:5
     m = c;
-    for SUcellRadius = 3000:1000:3000 % 1000:1000:7000
+    for SUcellRadius = 0:0:0 % 1000:1000:7000
 
 
     utilityHistory=[];
@@ -173,7 +169,7 @@ for c = 2:1:5
                 [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
                     B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
-                    = runSchemes(run, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+                    = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
                     averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu);
         else
@@ -247,7 +243,7 @@ if(runSchemesForECC)
         hold on;
     end
     legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-    xticks(2:1:5);
+    xticks(2:1:2);
     xlabel('Number of Available Channels');
     ylabel('Average Transmission Power (Watts)');
     applyhatch(gcf,'|-+.\/');
@@ -266,7 +262,7 @@ if(runSchemesForECC)
         hold on;
     end
     legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-    xticks(2:1:5);
+    xticks(2:1:2);
     xlabel('Number of Available Channels');
     ylabel('Average SINR on End Terminals (dB)');
     applyhatch(gcf,'|-+.\/');

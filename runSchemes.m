@@ -1,20 +1,23 @@
 function [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
     B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
-    = runSchemes(run, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
+    = runSchemes(run, w, P, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
     averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu)
 
+
+% matrix B is expanded for w times
+% now B's size is n*w X c
 
 seq = randperm(n);
    %% random channel allocation
    
         % Initialize channels asignment randomly
-        B = zeros(n, c);
+        B = zeros(n*w, c);
         doagain=1;
             while (doagain)
-                for i = 1 : n
-                   B(i, :) = P((i-1)*c + floor((1+c * rand)), :);        
+                for i = 1 : n*w
+                   B(i, :) = P((mod(i, n)-1)*c + floor((1+c * rand)), :);        
                 end
                 doagain=0;
                 for i=1:c
@@ -114,7 +117,7 @@ seq = randperm(n);
         
         % model.A, parameters in constraints
         % n x (n*c)
-        % assume n = 4, c = 2, then model.A is,
+        % assuming n = 4, c = 2, then model.A is,
         % 1 0 0 0 1 0 0 0
         % 0 1 0 0 0 1 0 0
         % 0 0 1 0 0 0 1 0
@@ -136,7 +139,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         optimizaionModel1.obj = NoisePowerRatioInOneRow;
         
         optimizaionModel1.A = sparse(A);
-        optimizaionModel1.rhs = ones(1, n);
+        optimizaionModel1.rhs = ones(1, n)*2;
         optimizaionModel1.sense = '=';
         optimizaionModel1.vtype = 'B';
         %optimizaionModel1.modelsense = 'min';
@@ -172,7 +175,7 @@ NoisePowerRatioInOneRow = NoisePowerRatioInOneRow.*(10e+10);
         %---------------------------|
 
         B = initialB;
-        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
+        [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(w, B, n, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
         recordPerf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
         sumUtilityWhitecat = [sumUtility];
 
