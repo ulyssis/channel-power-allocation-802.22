@@ -4,48 +4,42 @@
 
 % su: index of current secondary user; 
 
-function [B, updateFlag] = update(su, B, P, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta)
+function [B, updateFlag] = update(su, w, B, P, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta)
 workingChannel = find(B(su,:)); % which channel is currently used?
 n = size(B, 1);
 c = size(P, 2);   %   numeracally equal to c, 
-% F = (B* B' ~= 0);
-% F = F - eye(size(B, 1));
-%     InterferenceonAll = Gtilde.* F * sum(B, 2) + delta;
-%     part1 = InterferenceonAll(su)/sum(B(su,:));
-%     
-%     tem = Gtilde.*F;
-%     part2 = sum(tem(:,su)*sum(B(su, :))./sum(B, 2));
-%     
-%     
-% 
-%         a = sum(B~=0);  % 1 X c
-%         TVInf2Power = (GtildeAll(n+m+1:n+m+m, 1:n)'.* (B~=0) * TVpower)./(B+(B==0));     % B+(B==0) avoid 0 in the demoninator
-%         
-%     part3 = sum(TVInf2Power(:,workingChannel)) / (a(workingChannel)-1);
-%    
-%     
-%     PreviousUsu = part1 + part2 + part3;
-%     PreviousChannel = B(su, :); 
-%     
-%     c = size(P, 2);   %   numeracally equal to c, 
-%     Usu = zeros(1 , size(P, 2));    %  store su's utilities which are determined by all different channels
+Usu = zeros(1, c);
+channleBeingUsedByCoLoaction = 0;
 for i = 1: c
+    % if this channel is not being used by the co-location WBS
+    thisChannelIsNotUsedByCOLocationWBSs = channelUsageCoLocationWBSs(i, n, w, su, B);
+    if(thisChannelIsNotUsedByCOLocationWBSs)
         B(su, :) = P((su-1)*c + i, :);
         F = (B* B' ~= 0);
         F = F - eye(size(B, 1));
-        InterferenceonAll = Gtilde.* F * sum(B, 2)*eta + delta/(n/c);
+        InterferenceonAll = repmat(Gtilde, w,w).* F * sum(B, 2)*eta + delta/(n/c);
         part1 = InterferenceonAll(su)/(sum(B(su,:))*SUcellRadius^(-pathlossfactor));
 
-        tem = Gtilde.*F;
+        tem = repmat(Gtilde, w, w).*F;
         part2 = sum(tem(:,su)*sum(B(su, :))./(sum(B, 2)*SUcellRadius^(-pathlossfactor))) ; 
 
-        TVInf2Power = (GtildeAll(n+m+1:n+m+m, 1:n)'.* (B~=0) * TVpower)./((B+(B==0))*SUcellRadius^(-pathlossfactor));     % B+(B==0) avoid 0 in the demoninator
+        TVInf2Power = (repmat(GtildeAll(n/w+m+1:n/w+m+m, 1:n/w)', w, 1).* (B~=0) * TVpower)./((B+(B==0))*SUcellRadius^(-pathlossfactor));     % B+(B==0) avoid 0 in the demoninator
         part3 = sum(TVInf2Power(:,i));
 
         
         Usu(i) = part1 + part2 + part3;
- end
+        if(Usu(i) == 0)
+            stop  =1;
+        end
+    else
+        channleBeingUsedByCoLoaction = i;
+    end
+end
 
+% delete the element with respect to the channel which is used by the
+% co-location WBSs
+Usu(i) = [];
+ 
 [MinimumIteration, tem2] = min(Usu);
 
 % if MinimumIteration < PreviousUsu    %  there is another channel leading to smaller utility

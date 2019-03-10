@@ -41,11 +41,13 @@ gurobi_setup;
 savepath;
 
     runtimes =  100;  % number of simulation run
-    n = 16;    % number of WBS
+    n = 9;    % number of WBS
     w = 2;     % number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
-    infBound = 5*10.^(-8);     % The interfernce threshold on PU contour  
+    % n=16->  5*10.^(-8);
+    infBound = 1*10.^(-8);     % The interfernce threshold on PU contour  
+    
     TVpower = 0;
     pathlossfactor = 2;    
     miniP = 1; % xx dbm, the minmum power for users, 30dbm - 1W
@@ -64,9 +66,9 @@ averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
 averageETSINRCIOverNumOfChannels = [];
 
-for c = 5:1:5
+for c = 4:1:4
     m = c;
-    for SUcellRadius = 0:0:0 % 1000:1000:7000
+    for SUcellRadius = 1000:1:1000 % 1000:1000:7000
 
 
     utilityHistory=[];
@@ -165,7 +167,7 @@ for c = 5:1:5
                 cvx=sum(P_CVX,2);
                 cvx_container = [cvx_container, cvx];
 
-                %% run channel assignment scheme I and comparison schemes, which are designed for FCC
+                %% run channel assignment scheme I and comparison schemes
                 [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
                     SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
                     B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
@@ -212,11 +214,6 @@ for c = 5:1:5
         end
     end      
 
-    %         printplotsWorst20_CAschemes2power(plotLog, n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_optimization_container);
-
-    %         % plot figures for only maximal power decision
-    %         worst20(n, worstSINR_random_container,worstSINR_cat_container, worstSINR_case_container, worstSINR_noregret_container, worstSINR_optimization_container);
-    %         worst20(n, worstSINR_random_container2,worstSINR_cat_container2, worstSINR_case_container2, worstSINR_noregret_container2, worstSINR_optimization_container2);
     end
 
     if(runSchemesForECC)

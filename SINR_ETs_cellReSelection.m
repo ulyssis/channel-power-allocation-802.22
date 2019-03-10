@@ -3,7 +3,10 @@ function [SINRofETs, averageSINR, error, worstSINR, fairness] = SINR_ETs_cellReS
     inf_ET_SU = Gtilde(1:n*nET, n*nET+1:n*nET+n).*(ones(n*nET,1)*sum(B, 2)'); % n*nET x n, the power received from every SU
     [V, I] = max(inf_ET_SU'); % I stores the indices of the WBS for each ET which receives the biggest power. For cell selection!
     F = (B* B' ~= 0); % n x n, relationship between SUs
+    
+    % set the most interfering SU to be 0 in the interfering matrix F!
     F = F - eye(size(B, 1));
+    
     F_ET = [];
     for i=1: n*nET
         F_ET(i,:) = F(I(i) ,:);
