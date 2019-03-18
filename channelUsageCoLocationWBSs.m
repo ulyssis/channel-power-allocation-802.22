@@ -6,11 +6,7 @@ function [thisChannelIsNotUsedByCOLocationWBSs] = channelUsageCoLocationWBSs(k, 
 
 c = size(B, 2);
 
-for i = 1: w
-   if(su > (i-1)*n && su <= i*n)
-        realIndex = su - (i-1)*n;
-   end
-end
+realIndex = getRealIndexFromTheExpanded(su, n, w);
 
 
 channelUsageCoLocationWBSs = zeros(w-1, c);

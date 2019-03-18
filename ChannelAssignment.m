@@ -40,9 +40,10 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  100;  % number of simulation run
+    runtimes =  5;  % number of simulation run
     n = 9;    % number of WBS
-    w = 2;     % number of channels allowed to be used 
+    maxNumMultiChannel = 3;     % maximal number of channels allowed to be used 
+    minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
     % n=16->  5*10.^(-8);
@@ -51,7 +52,7 @@ savepath;
     TVpower = 0;
     pathlossfactor = 2;    
     miniP = 1; % xx dbm, the minmum power for users, 30dbm - 1W
-    maxP = 10; % xx dbm
+    maxP = 4; % xx dbm
     nET = 10;  % number of endterminals in each WBS 
     s = 8; % set standard deviation
     coverage = lengthSide/4/2 * 0.45; % the maximal distance away from the WBS, whihc a terminal can have 
@@ -70,34 +71,6 @@ for c = 4:1:4
     m = c;
     for SUcellRadius = 1000:1:1000 % 1000:1000:7000
 
-
-    utilityHistory=[];
-    powerHistory=[];
-    averageSinrHistory = [];
-    averageStdHistory = [];
-
-    SINR_ETs_random_container = [];     
-    SINR_ETs_whitecat_container = [];
-    SINR_ETs_whitecase_container = [];    
-    SINR_ETs_noregret_container = [];  
-    SINR_ETs_PotentialGame_container = [];  
-    SINR_ETs_optimization_container = [];
-    SINR_ETs_optimization2_container = [];
-
-    fair_random_container = [];     
-    fair_cat_container = [];     
-    fair_case_container = [];     
-    fair_optimization_container =[];
-    fair_noregret_container = [];  
-    fair_PotentialGame_container = [];  
-
-    worstSINR_random_container = [];
-    worstSINR_cat_container = [];     
-    worstSINR_case_container = [];     
-    worstSINR_optimization_container = [];     
-    worstSINR_noregret_container = [];   
-    worstSINR_PotentialGame_container = []; 
-
     NOperatingWBSs = [];
     utilityHistoryFCC = [];
     powerHistoryFCC = [];
@@ -110,27 +83,18 @@ for c = 4:1:4
     worstSINR_centralized_FCC_container = [];
     worstSINR_distributed_FCC_container = [];
 
-    convergenceStepWhitecat = zeros(1, runtimes);
-    convergenceStepWhitecase = zeros(1, runtimes);
-    convergenceStepNoregret = zeros(1, runtimes);
-    convergenceStepPotentialGame = zeros(1, runtimes);
-
-    SINRvarianceWhitecat_container = zeros(1, runtimes);
-    SINRvarianceWhitecase_container = zeros(1, runtimes);
-    SINRvarianceNoregret_container = zeros(1, runtimes);
-    SINRvariancePotentialGame_container = zeros(1, runtimes);
-
-    B_random =[];
-    B_cat =[];
-    B_case=[];
-    B_optimization=[];
-    B_noregret=[];
 
     lp_container=[];
     cvx_container=[];
 
     RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for scheme II obtains solution.
-
+    decentralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    centralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    decentralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+    centralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+    random_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    random_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+    
         baseDir = '/Users/max/Documents/git_li/channel-power-allocation-802.22/';
         FileNameSumUtilityScheme2distributed = fullfile(baseDir, 'sumUtilityScheme2distributed.csv');
         delete(FileNameSumUtilityScheme2distributed);
@@ -145,9 +109,11 @@ for c = 4:1:4
                 delete(fullFileName);
             end
         end
-
-
-
+        
+    % return a array of empty matrix
+    simSesultCell = cell(maxNumMultiChannel, 4); 
+    xstick = minNumMultiChannel: 1: maxNumMultiChannel;
+for w = xstick
     for run = 1: runtimes % the number of simulations
 
 
@@ -167,13 +133,14 @@ for c = 4:1:4
                 cvx=sum(P_CVX,2);
                 cvx_container = [cvx_container, cvx];
 
-                %% run channel assignment scheme I and comparison schemes
-                [utilityHistory, powerHistory, averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-                    SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, ...
-                    B_random, B_cat, B_case, B_optimization, B_noregret, B_PotentialGame] ...
-                    = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, utilityHistory, powerHistory, ...
-                    averageSinrHistory, averageStdHistory, SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-                    SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container, fair_random_container, fair_cat_container, fair_case_container, fair_optimization_container, fair_noregret_container, fair_PotentialGame_container, worstSINR_random_container, worstSINR_cat_container, worstSINR_case_container, worstSINR_optimization_container, worstSINR_noregret_container, worstSINR_PotentialGame_container, convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret, convergenceStepPotentialGame, SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container, SINRvariancePotentialGame_container, PMiu);
+ 
+            [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
+                centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
+                random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns]...
+                = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, PMiu, ...
+                decentralized_TxPower_allWBSs_allRuns, centralized_TxPower_allWBSs_allRuns, ...
+                decentralized_CellThrought_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, ...
+                random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns)           
         else
         %% run channel assignment scheme II for FCC
          [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
@@ -187,97 +154,26 @@ for c = 4:1:4
         end
 
     end
+    
+            simSesultCell(w, :) = {centralized_TxPower_allWBSs_allRuns,decentralized_TxPower_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns};
+             %simSesultCell(w, :) = {centralized_TxPower_allWBSs_allRuns,random_TxPower_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns};
 
-    %plotLog = POperation;
-    plotLog = SUcellRadius/100;
+            
+end
 
-        if(runSchemesForECC)
-        %      plots of scheme I
-                printplotsCAschemes1(plotLog, n, nET, ...
-                    powerHistory, averageSinrHistory, ...
-                    SINR_ETs_random_container, SINR_ETs_whitecat_container, SINR_ETs_whitecase_container, ...
-                    SINR_ETs_optimization_container, SINR_ETs_noregret_container, SINR_ETs_PotentialGame_container); 
+simSesult = cell2mat(simSesultCell);
 
-        else
-        %      plots of schemII, both centralized and distributed
-                printplotsCAschemes2(plotLog, n, nET, ...
-                    utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, NOperatingWBSs, ...
-                    SINR_ETs_centralized_FCC_container, SINR_ETs_distributed_FCC_container); 
+ECCMultipleChannelPlots(0, n, simSesult, runtimes, xstick);
 
-        %% sumUtility of schemeII distributed.
-        %         sumUtilityScheme2distributedAllRuns = load('/Users/max/Documents/git_li/channel-power-allocation-802.22/sumUtilityScheme2distributed.csv');
-        %         sumUtilityScheme2distributed = sumUtilityScheme2distributedAllRuns(end, :);
-        %         figure(plotLog + 6);
-        %         handle1 = plot(sumUtilityScheme2distributed);
-        %         set(handle1.legend,'Location','southeast', 'FontSize', 10, 'Color', 'R');
 
-        end
     end      
 
     end
 
-    if(runSchemesForECC)
-        % averageDataOverNumOfChannels:
-        averagePowerOverNumOfChannels = [averagePowerOverNumOfChannels, mean(powerHistory,2)];
-        averagePowerCIOverNumOfChannels = [averagePowerCIOverNumOfChannels, 1.96*std(powerHistory,1,2)/sqrt(n)];
 
-        averageETSINROverNumOfChannels = [averageETSINROverNumOfChannels, mean(averageSinrHistory,2)];
-        averageETSINRCIOverNumOfChannels = [averageETSINRCIOverNumOfChannels, 1.96*std(averageSinrHistory,1,2)/sqrt(n*nET)];
-    end
 end
 
 
 %% plot averageDataOverNumOfChannels and averageDataOverNumOfChannels
-if(runSchemesForECC)
-    % Average Transmisson Power
-    figure(c*10 + 6);
-    h = gobjects(size(averagePowerOverNumOfChannels, 1),1);
-    for i = 1: size(averagePowerOverNumOfChannels, 1)
-        x = [2+0.03*i: 1 :c+0.03*i];
-        y = averagePowerOverNumOfChannels(i, :);
-        err = averagePowerCIOverNumOfChannels(i, :);
-        h(i) = errorbar(x,y,err);
-        hold on;
-    end
-    legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','southwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-    xticks(2:1:2);
-    xlabel('Number of Available Channels');
-    ylabel('Average Transmission Power (Watts)');
-    applyhatch(gcf,'|-+.\/');
-    set(gca,'FontSize',16);
 
-
-
-    % Average SINR
-    figure(c*10 + 7);
-    h = gobjects(size(averageETSINROverNumOfChannels, 1),1);
-    for i = 1: size(averageETSINROverNumOfChannels, 1)
-        x = [2+0.03*i: 1 :c+0.03*i];
-        y = averageETSINROverNumOfChannels(i, :);
-        err = averageETSINRCIOverNumOfChannels(i, :);
-        h(i) = errorbar(x,y,err);
-        hold on;
-    end
-    legend(h, {'Optimization', 'Random Allocation', 'Potential Game', 'No-Regret Learning', 'WhiteCase','whiteCat'}, 'Location','northwest', 'FontSize', 12, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
-    xticks(2:1:2);
-    xlabel('Number of Available Channels');
-    ylabel('Average SINR on End Terminals (dB)');
-    applyhatch(gcf,'|-+.\/');
-    set(gca,'FontSize',16);
-end
-% %         % Record the sum of utility in the converging
-% %         % process in one run
-% %         % how to use it: set a breakpoint in the end of function
-% %         % "runSchemes", then input the following function in the command
-% %         % window
-% %         convergenplot(sumUtilityWhitecat, sumUtilityWhitecase, sumUtilityNoregret);
-% %%%%%----4 schemes section------------
-        
-        
-% % % % %this is undone
-% % % % plotConvergenceSteps(convergenceStepWhitecat, convergenceStepWhitecase, convergenceStepNoregret);
-% % % % plotSINRVariance(SINRvarianceWhitecat_container, SINRvarianceWhitecase_container, SINRvarianceNoregret_container);    
-        
-% % % % % % 95% confidence interval:
-% % % % % % std(convergenceStepNoregret)/sqrt(100)*2*1.962
     toc;
