@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  5;  % number of simulation run
+    runtimes =  100;  % number of simulation run
     n = 9;    % number of WBS
     maxNumMultiChannel = 3;     % maximal number of channels allowed to be used 
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
@@ -55,7 +55,7 @@ savepath;
     maxP = 4; % xx dbm
     nET = 10;  % number of endterminals in each WBS 
     s = 8; % set standard deviation
-    coverage = lengthSide/4/2 * 0.45; % the maximal distance away from the WBS, whihc a terminal can have 
+    coverage = lengthSide/4/2 * 0.5; % the maximal distance away from the WBS, whihc a terminal can have 
                                      % This value should consider SUcellRadius.
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
