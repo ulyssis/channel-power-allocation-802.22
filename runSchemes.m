@@ -1,13 +1,19 @@
 function [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
+    dyspan14_TxPower_allWBSs_allRuns, ...
     centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
-    random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns] ...
+    dyspan14_CellThrought_allWBSs_allRuns] ...
     = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
     SUcellRadius, delta, pathlossfactor, eta, PMiu, ...
-    decentralized_TxPower_allWBSs_allRuns, centralized_TxPower_allWBSs_allRuns, ...
-    decentralized_CellThrought_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, ...
-    random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns)
+    centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
+                dyspan14_TxPower_allWBSs_allRuns, ...
+                centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
+                dyspan14_CellThrought_allWBSs_allRuns)
 
 
+
+
+
+    
 % matrix B is expanded for w times
 % now B's size is n*w X c
 
@@ -139,6 +145,25 @@ seq = randperm(n*w);
         decentralized_CellThrought_allWBSs_allRuns(run, :) = averageShannonCPerCell;
 
         B_decentralzied = condenseB;
+        
+        %%
+        %-----------------------------|
+        %         dyspan14 comparison |
+        %-----------------------------|
+        
+        
+        availableChannelsAllWBSs = dyspan14_createReservedChannelsAllWBSs(n, c);
+        
+        channelAllocation = zeros(n, c);
+        channelAllocation = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, availableChannelsAllWBSs, TVpower, delta, eta);
+        
+        averageP = sum(channelAllocation, 2)';
+        [averageShannonCPerCell] = capacityOnETs(channelAllocation, n, w, GtildeETsSUs, nET, delta);
+        %B_cat = condenseB;
+        dyspan14_TxPower_allWBSs_allRuns(run, :) = averageP;
+        dyspan14_CellThrought_allWBSs_allRuns(run, :) = averageShannonCPerCell;
+
+        B_dyspan14 = channelAllocation;
         %%
         %-----------------------------|
         %         WhiteCase           |

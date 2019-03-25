@@ -67,6 +67,14 @@ averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
 averageETSINRCIOverNumOfChannels = [];
 
+
+    decentralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    centralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    dyspan14_TxPower_allWBSs_allRuns  = zeros(runtimes, n);
+    decentralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+    centralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+    dyspan14_CellThrought_allWBSs_allRuns  = zeros(runtimes, n);
+
 for c = 4:1:4
     m = c;
     for SUcellRadius = 1000:1:1000 % 1000:1000:7000
@@ -88,12 +96,7 @@ for c = 4:1:4
     cvx_container=[];
 
     RetGUROBI_FCC = zeros(1, runtimes); % record whether the execution of GUROBI for scheme II obtains solution.
-    decentralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
-    centralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
-    decentralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
-    centralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
-    random_TxPower_allWBSs_allRuns = zeros(runtimes, n);
-    random_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
+
     
         baseDir = '/Users/max/Documents/git_li/channel-power-allocation-802.22/';
         FileNameSumUtilityScheme2distributed = fullfile(baseDir, 'sumUtilityScheme2distributed.csv');
@@ -135,12 +138,15 @@ for w = xstick
 
  
             [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
+                dyspan14_TxPower_allWBSs_allRuns, ...
                 centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
-                random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns]...
-                = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, SUcellRadius, delta, pathlossfactor, eta, PMiu, ...
-                decentralized_TxPower_allWBSs_allRuns, centralized_TxPower_allWBSs_allRuns, ...
-                decentralized_CellThrought_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, ...
-                random_TxPower_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns)           
+                dyspan14_CellThrought_allWBSs_allRuns] ...
+                = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
+                                SUcellRadius, delta, pathlossfactor, eta, PMiu,...
+                                centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
+                dyspan14_TxPower_allWBSs_allRuns, ...
+                centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns,...
+                dyspan14_CellThrought_allWBSs_allRuns);      
         else
         %% run channel assignment scheme II for FCC
          [RetGUROBI_FCC, utilityHistoryFCC, powerHistoryFCC, averageSinrHistoryFCC, averageStdHistoryFCC, NOperatingWBSs, ...
