@@ -152,10 +152,10 @@ seq = randperm(n*w);
         %-----------------------------|
         
         
-        availableChannelsAllWBSs = dyspan14_createReservedChannelsAllWBSs(n, c);
+        %availableChannelsAllWBSs = dyspan14_createReservedChannelsAllWBSs(n, c);
         
         channelAllocation = zeros(n, c);
-        channelAllocation = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, availableChannelsAllWBSs, TVpower, delta, eta);
+        channelAllocation = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, TVpower, delta, eta);
         
         averageP = sum(channelAllocation, 2)';
         [averageShannonCPerCell] = capacityOnETs(channelAllocation, n, w, GtildeETsSUs, nET, delta);

@@ -5,7 +5,7 @@ function [Cmax] = dyspan14_BestChannel(i, n, c, P_CVX, Gtilde, channelAllocation
 
 f = - 1000;
 
-availableChannelsOnWBSi = cell2mat(availableChannelsAllWBSs{i});
+availableChannelsOnWBSi = availableChannelsAllWBSs{i};
 
 ChannelIndice = find(availableChannelsOnWBSi);
 

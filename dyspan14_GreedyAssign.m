@@ -1,5 +1,5 @@
 %- just a template
-function [channelAllocation] = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, availableChannelsAllWBSs, TVpower, delta, eta)
+function [channelAllocation] = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, TVpower, delta, eta)
 
 
 % 1: n cell, each element is a vector 1: c

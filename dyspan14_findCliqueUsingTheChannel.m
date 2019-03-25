@@ -13,7 +13,7 @@ for i = 1: n
     end
     
     
-    thisWbsHaving = ismember(discussedChannel, cell2mat(availableChannelsAllWBSs(i)));
+    thisWbsHaving = ismember(discussedChannel, find(cell2mat(availableChannelsAllWBSs(i))));
     if(thisWbsHaving)
         cliqueHavingTheChannel(i) = 1;
     end
