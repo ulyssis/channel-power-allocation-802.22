@@ -18,6 +18,7 @@ function [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_all
 % now B's size is n*w X c
 
 seq = randperm(n*w);
+seq2 = randperm(n);
    %% random channel allocation
    
    condenseP_CVX = condenseP(P_CVX, n, c);
@@ -155,10 +156,11 @@ seq = randperm(n*w);
         %availableChannelsAllWBSs = dyspan14_createReservedChannelsAllWBSs(n, c);
         
         channelAllocation = zeros(n, c);
-        channelAllocation = dyspan14_GreedyAssign(n, c, P_CVX, Gtilde, channelAllocation, TVpower, delta, eta);
+        channelAllocation = dyspan14_GreedyAssign(n, seq2, c, P_CVX, Gtilde, channelAllocation, TVpower, delta, eta, SUcellRadius, pathlossfactor);
         
-        averageP = sum(channelAllocation, 2)';
-        [averageShannonCPerCell] = capacityOnETs(channelAllocation, n, w, GtildeETsSUs, nET, delta);
+        averageP = sum(channelAllocation.*condenseP_CVX, 2)';
+        w=1;
+        [averageShannonCPerCell] = capacityOnETs_greedyDysPAN14(channelAllocation, n, w, GtildeETsSUs, nET, delta);
         %B_cat = condenseB;
         dyspan14_TxPower_allWBSs_allRuns(run, :) = averageP;
         dyspan14_CellThrought_allWBSs_allRuns(run, :) = averageShannonCPerCell;

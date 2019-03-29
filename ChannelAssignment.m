@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  100;  % number of simulation run
+    runtimes =  50;  % number of simulation run
     n = 9;    % number of WBS
     maxNumMultiChannel = 3;     % maximal number of channels allowed to be used 
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
@@ -77,7 +77,7 @@ averageETSINRCIOverNumOfChannels = [];
 
 for c = 4:1:4
     m = c;
-    for SUcellRadius = 1000:1:1000 % 1000:1000:7000
+    for SUcellRadius = 2000:1:2000 % 1000:1000:7000
 
     NOperatingWBSs = [];
     utilityHistoryFCC = [];
@@ -114,7 +114,7 @@ for c = 4:1:4
         end
         
     % return a array of empty matrix
-    simSesultCell = cell(maxNumMultiChannel, 4); 
+    simSesultCell = cell(maxNumMultiChannel, 6); 
     xstick = minNumMultiChannel: 1: maxNumMultiChannel;
 for w = xstick
     for run = 1: runtimes % the number of simulations
@@ -161,7 +161,9 @@ for w = xstick
 
     end
     
-            simSesultCell(w, :) = {centralized_TxPower_allWBSs_allRuns,decentralized_TxPower_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns};
+            simSesultCell(w, :) = {centralized_TxPower_allWBSs_allRuns,decentralized_TxPower_allWBSs_allRuns, ...
+                centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
+                dyspan14_TxPower_allWBSs_allRuns, dyspan14_CellThrought_allWBSs_allRuns};
              %simSesultCell(w, :) = {centralized_TxPower_allWBSs_allRuns,random_TxPower_allWBSs_allRuns, centralized_CellThrought_allWBSs_allRuns, random_CellThrought_allWBSs_allRuns};
 
             
