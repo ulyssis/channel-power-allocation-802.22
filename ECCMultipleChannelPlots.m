@@ -49,21 +49,27 @@ stdTx = [stdCenTx ; stdDisTx];
         h(i) = errorbar(x,y,err, '', '-o');
         hold on;
     end
-    x = 3.3;
+    x = xstick(end) + 0.3;
     y = meanGreedyTx;
     err = stdGreedyTx;   
     h(SchemesNum + 1) = errorbar(x,y,err, '', 'gs', 'MarkerEdgeColor','green','MarkerFaceColor','green');
     
-    legend(h, {'Optimization', 'WhiteCat', 'Greedy Algo.'}, 'Location','northwest', 'FontSize', 16, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
+    LH = legend(h, {'Optimization', 'WhiteCat', 'Greedy Algo.'}, 'Location','northwest', 'FontSize', 16, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(xstick);
     xlim([xstick(1)-0.2, xstick(end) + 0.5]);
     xlabel('Number of Channels for Transmission');
     ylabel('Avg. Tx Power per WBS (Watts)');
     set(gca,'FontSize',16);
 
+
+    yl = ylim;
+    lineH = line([xstick(end)+0.2 xstick(end)+0.2],yl,'Color',[0.9290, 0.6940, 0.1250], 'Linestyle', '--');
     ax = gca;
-ax.XGrid = 'off';
-ax.YGrid = 'on';
+    ax.XGrid = 'off';
+    ax.YGrid = 'on';
+    lineH.DisplayName = '';
+    lineH.HandleVisibility = 'off';
+
 
     
     
@@ -112,7 +118,7 @@ stdCapacity = [stdCenCapacity ; stdDisCapacity];
         h(i) = errorbar(x,y,err, '', '-o');
         hold on;
     end
-    x = 3.3;
+    x = xstick(end) + 0.3;
     y = meanGreedyCap;
     err = stdGreedyCap;   
     h(SchemesNum + 1) = errorbar(x,y,err, '', 'gs', 'MarkerEdgeColor','green','MarkerFaceColor','green');
@@ -124,7 +130,10 @@ stdCapacity = [stdCenCapacity ; stdDisCapacity];
     ylabel('Throughput (bits/s)');
     set(gca,'FontSize',16);
     
+    yl = ylim;
+    lineH = line([xstick(end)+0.2 xstick(end)+0.2],yl,'Color',[0.9290, 0.6940, 0.1250], 'Linestyle', '--');
     ax = gca;
-ax.XGrid = 'off';
-ax.YGrid = 'on';
-
+    ax.XGrid = 'off';
+    ax.YGrid = 'on';
+    lineH.DisplayName = '';
+    lineH.HandleVisibility = 'off';

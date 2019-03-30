@@ -40,9 +40,9 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  50;  % number of simulation run
-    n = 9;    % number of WBS
-    maxNumMultiChannel = 3;     % maximal number of channels allowed to be used 
+    runtimes =  10;  % number of simulation run
+    n = 16;    % number of WBS
+    maxNumMultiChannel = 5;     % maximal number of channels allowed to be used 
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -75,9 +75,9 @@ averageETSINRCIOverNumOfChannels = [];
     centralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
     dyspan14_CellThrought_allWBSs_allRuns  = zeros(runtimes, n);
 
-for c = 4:1:4
+for c = 5:1:5
     m = c;
-    for SUcellRadius = 2000:1:2000 % 1000:1000:7000
+    for SUcellRadius = 1000:1:1000 % 1000:1000:7000
 
     NOperatingWBSs = [];
     utilityHistoryFCC = [];
@@ -141,7 +141,7 @@ for w = xstick
                 dyspan14_TxPower_allWBSs_allRuns, ...
                 centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
                 dyspan14_CellThrought_allWBSs_allRuns] ...
-                = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
+                = runSchemes(run, w, maxNumMultiChannel, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
                                 SUcellRadius, delta, pathlossfactor, eta, PMiu,...
                                 centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
                 dyspan14_TxPower_allWBSs_allRuns, ...

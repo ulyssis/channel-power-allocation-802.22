@@ -2,7 +2,7 @@ function [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_all
     dyspan14_TxPower_allWBSs_allRuns, ...
     centralized_CellThrought_allWBSs_allRuns, decentralized_CellThrought_allWBSs_allRuns, ...
     dyspan14_CellThrought_allWBSs_allRuns] ...
-    = runSchemes(run, w, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
+    = runSchemes(run, w, maxNumMultiChannel, P_CVX, Gtilde, GtildeETsSUs, n, c, m, nET, GtildeAll, TVpower, ...
     SUcellRadius, delta, pathlossfactor, eta, PMiu, ...
     centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
                 dyspan14_TxPower_allWBSs_allRuns, ...
@@ -33,7 +33,10 @@ seq2 = randperm(n);
                     Vindex = 1:c;
                     deletedChannels =  randsample(Vindex, c-w, false);
                     Vindex(deletedChannels) = 0;
-
+                    
+                    %this is important!
+                    Vindex = Vindex~= 0; 
+                    
                     B(i, :) = condenseP_CVX(i, :).*Vindex;        
                 end
 
@@ -54,7 +57,7 @@ seq2 = randperm(n);
         %---------------------------|
         %         random            |
         %---------------------------|
-
+if w ~= maxNumMultiChannel
         randomB = condense(initialB, w);
         [averageShannonCPerCell] = capacityOnETs(randomB, n, w, GtildeETsSUs, nET, delta);
         random_TxPower_allWBSs_allRuns(run, :) = sum(randomB, 2)';
@@ -70,7 +73,10 @@ seq2 = randperm(n);
         B = GUROBI_ECC(n, c, w, P_CVX, Gtilde, delta);
 
         pause(1); % to avoid failure in capacityOnETs
-
+        else 
+        
+            B = condenseP_CVX;
+end
         disp(B);
         tol = 1.e-6;
         B(B<0 & B> -tol) = 0;
@@ -85,6 +91,7 @@ seq2 = randperm(n);
         %         WhiteCat          |
         %---------------------------|
 
+    if w ~= maxNumMultiChannel
         B = initialB;
 %         [sumUtility, averageI, averageP, averageSINR, stdSINR] = obtainPerformance(w, B, n*w, m, Gtilde, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, PMiu);
 %         recordPerf = [sumUtility, averageI, averageP, averageSINR, stdSINR];
@@ -139,6 +146,10 @@ seq2 = randperm(n);
 %            sss=1; 
 %         end
         condenseB = condense(B, w);
+        
+    else
+        condenseB = condenseP_CVX;
+    end    
         averageP = sum(condenseB, 2)';
         [averageShannonCPerCell] = capacityOnETs(condenseB, n, w, GtildeETsSUs, nET, delta);
         %B_cat = condenseB;

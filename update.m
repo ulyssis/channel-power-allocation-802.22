@@ -15,6 +15,11 @@ realIndex = getRealIndexFromTheExpanded(su, n, w);
 
 
 for i = 1: c
+    %-debug
+    if(nnz(B>4) > 0)
+       stop =1; 
+    end
+    %-debug
     % if this channel is not being used by the co-location WBS
     thisChannelIsNotUsedByCOLocationWBSs = channelUsageCoLocationWBSs(i, n, w, su, B);
     if(thisChannelIsNotUsedByCOLocationWBSs)
