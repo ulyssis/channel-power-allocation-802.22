@@ -97,6 +97,6 @@ function [averageShannonCPerCell] = capacityOnETs(B, n, w, GtildeETsSUs, nET, de
     % average Shannon capacity per cell:
     averageShannonCPerCell = zeros(1, n);
     for i = 1:n
-        averageShannonCPerCell(i) = mean(SC((i-1)*n+1:(i-1)*n+n));
+        averageShannonCPerCell(i) = mean(SC((i-1)*n+1 : (i-1)*n+nET));
     end
     

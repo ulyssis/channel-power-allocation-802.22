@@ -57,11 +57,11 @@ seq2 = randperm(n);
         %---------------------------|
         %         random            |
         %---------------------------|
-if w ~= maxNumMultiChannel
-        randomB = condense(initialB, w);
-        [averageShannonCPerCell] = capacityOnETs(randomB, n, w, GtildeETsSUs, nET, delta);
-        random_TxPower_allWBSs_allRuns(run, :) = sum(randomB, 2)';
-        random_CellThrought_allWBSs_allRuns(run, :) = averageShannonCPerCell;
+
+%         randomB = condense(initialB, w);
+%         [averageShannonCPerCell] = capacityOnETs(randomB, n, w, GtildeETsSUs, nET, delta);
+%         random_TxPower_allWBSs_allRuns(run, :) = sum(randomB, 2)';
+%         random_CellThrought_allWBSs_allRuns(run, :) = averageShannonCPerCell;
         
         %---------------------------------------------
         %         optimation: channel allocation                   
@@ -69,7 +69,7 @@ if w ~= maxNumMultiChannel
         %         - constraints are linear                         
         %         - optimization by GUROBI
         %---------------------------------------------
-
+if w ~= maxNumMultiChannel
         B = GUROBI_ECC(n, c, w, P_CVX, Gtilde, delta);
 
         pause(1); % to avoid failure in capacityOnETs
