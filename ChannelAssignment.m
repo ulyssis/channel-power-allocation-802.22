@@ -40,9 +40,10 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  20;  % number of simulation run
-    n = 9;    % number of WBS
-    maxNumMultiChannel = 4;     % maximal number of channels allowed to be used 
+    runtimes =  10;  % number of simulation run
+    n = 16;    % number of WBS
+    c = 5;
+    maxNumMultiChannel = 5;     % maximal number of channels allowed to be used 
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -75,7 +76,6 @@ averageETSINRCIOverNumOfChannels = [];
     centralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
     dyspan14_CellThrought_allWBSs_allRuns  = zeros(runtimes, n);
 
-for c = 4:1:4
     m = c;
     for SUcellRadius = 1000:1:1000 % 1000:1000:7000
 
@@ -179,7 +179,7 @@ ECCMultipleChannelPlots(0, n, simSesult, runtimes, xstick);
     end
 
 
-end
+
 
 
 %% plot averageDataOverNumOfChannels and averageDataOverNumOfChannels

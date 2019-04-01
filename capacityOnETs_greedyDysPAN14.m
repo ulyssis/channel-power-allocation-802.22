@@ -100,6 +100,6 @@ function [averageShannonCPerCell] = capacityOnETs_greedyDysPAN14(B, n, w, Gtilde
     % average Shannon capacity per cell:
     averageShannonCPerCell = zeros(1, n);
     for i = 1:n
-        averageShannonCPerCell(i) = mean(SC((i-1)*n+1:(i-1)*n+n));
+        averageShannonCPerCell(i) = mean(SC((i-1)*nET+1 : (i-1)*nET+nET));
     end
     

@@ -127,7 +127,7 @@ stdCapacity = [stdCenCapacity ; stdDisCapacity];
     xticks(xstick);
     xlim([xstick(1)-0.2, xstick(end) + 0.5]);
     xlabel('Number of Channels for Transmission');
-    ylabel('Throughput (bits/s)');
+    ylabel('Avg. Shannon Capacity on End Terminals (bits/s)');
     set(gca,'FontSize',16);
     
     yl = ylim;
