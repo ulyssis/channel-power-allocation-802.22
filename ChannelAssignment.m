@@ -40,10 +40,10 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  10;  % number of simulation run
-    n = 16;    % number of WBS
-    c = 5;
-    maxNumMultiChannel = 5;     % maximal number of channels allowed to be used 
+    runtimes =  50;  % number of simulation run
+    n = 9;    % number of WBS
+    c = 4;
+    maxNumMultiChannel = 4;     % maximal number of channels allowed to be used 
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
@@ -121,7 +121,7 @@ for w = xstick
 
 
     %% plot the distibution of stations and nodes
-    %    plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
+    plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
 
         if(runSchemesForECC)
 
