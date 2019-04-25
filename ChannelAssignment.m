@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  50;  % number of simulation run
+    runtimes =  30;  % number of simulation run
     n = 9;    % number of WBS
     c = 4;
     maxNumMultiChannel = 4;     % maximal number of channels allowed to be used 
@@ -48,6 +48,7 @@ savepath;
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
     % n=16->  5*10.^(-8);
+    % n=9->  1*10.^(-8);
     infBound = 1*10.^(-8);     % The interfernce threshold on PU contour  
     
     TVpower = 0;
@@ -120,8 +121,7 @@ for w = xstick
     for run = 1: runtimes % the number of simulations
 
 
-    %% plot the distibution of stations and nodes
-    plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
+
 
         if(runSchemesForECC)
 
@@ -133,9 +133,11 @@ for w = xstick
                 [posSU, posET, posTVContor, Gtilde, GtildeETsSUs, GtildeAll] = geoinfo(n, m, nET, lengthSide, coverage, SUcellRadius, pathlossfactor, s);            
                 [P_CVX, max_cvx_statusMsg] = maximalPowerPlanningCVX(n, m, infBound, GtildeAll, miniP, maxP);
             end
-                cvx=sum(P_CVX,2);
-                cvx_container = [cvx_container, cvx];
-
+            cvx=sum(P_CVX,2);
+            cvx_container = [cvx_container, cvx];
+    
+                % plot the distibution of stations and nodes
+            plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
  
             [centralized_TxPower_allWBSs_allRuns, decentralized_TxPower_allWBSs_allRuns, ...
                 dyspan14_TxPower_allWBSs_allRuns, ...

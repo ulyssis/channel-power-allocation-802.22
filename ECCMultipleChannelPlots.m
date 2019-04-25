@@ -11,7 +11,7 @@ function ECCMultipleChannelPlots(plotLog, n, simSesult, runtimes, xstick)
 figure(plotLog+1);
 
 numChannelScale = xstick(end) - xstick(1) + 1;
-SchemesNum = 2;
+SchemesNum = 3;
 
 % --- centralized Tx power
 cenTx = simSesult(:, 1:n);
@@ -33,15 +33,20 @@ for i = 1:numChannelScale
 end
 
 % ---greedy Tx algorithm
-greedyTx = simSesult(1:runtimes, 4*n+1 : 5*n);
-averageTx_greedy_allRuns = mean(greedyTx, 2);
-meanGreedyTx = mean(averageTx_greedy_allRuns);
-stdGreedyTx = 1.96*std(averageTx_greedy_allRuns',1,2)/sqrt(n);
+greedyTx = simSesult(:, 4*n+1 : 5*n);
+meangreedyTx = zeros(1, numChannelScale);
+stdgreedyTx = zeros(1, numChannelScale);
+for i = 1:numChannelScale
+    averageThR_ET = mean(greedyTx((i-1)*runtimes+1:i*runtimes, :), 2);
+    meangreedyTx(i) = mean(averageThR_ET);
+    stdgreedyTx(i) = 1.96*std(averageThR_ET',1,2)/sqrt(n);
+end
+%---
 
-meanTx = [meanCenTx ; meanDisTx];
-stdTx = [stdCenTx ; stdDisTx];
-
-    h = gobjects(SchemesNum + 1, 1);
+meanTx = [meanCenTx ; meanDisTx; meangreedyTx];
+stdTx = [stdCenTx ; stdDisTx; stdgreedyTx];
+%---
+    h = gobjects(SchemesNum, 1);
     for i = 1: SchemesNum
         x = xstick(1)+0.03*(i-1): 1 : xstick(end)+0.03*(i-1);
         y = meanTx(i, :);
@@ -49,10 +54,7 @@ stdTx = [stdCenTx ; stdDisTx];
         h(i) = errorbar(x,y,err, '', '-o');
         hold on;
     end
-    x = xstick(end) + 0.3;
-    y = meanGreedyTx;
-    err = stdGreedyTx;   
-    h(SchemesNum + 1) = errorbar(x,y,err, '', 'gs', 'MarkerEdgeColor','green','MarkerFaceColor','green');
+
     
     LH = legend(h, {'Optimization', 'WhiteCat', 'Greedy Algo.'}, 'Location','northwest', 'FontSize', 16, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(xstick);
@@ -62,13 +64,13 @@ stdTx = [stdCenTx ; stdDisTx];
     set(gca,'FontSize',16);
 
 
-    yl = ylim;
-    lineH = line([xstick(end)+0.2 xstick(end)+0.2],yl,'Color',[0.9290, 0.6940, 0.1250], 'Linestyle', '--');
-    ax = gca;
-    ax.XGrid = 'off';
-    ax.YGrid = 'on';
-    lineH.DisplayName = '';
-    lineH.HandleVisibility = 'off';
+%     yl = ylim;
+%     lineH = line([xstick(end)+0.2 xstick(end)+0.2],yl,'Color',[0.9290, 0.6940, 0.1250], 'Linestyle', '--');
+%     ax = gca;
+%     ax.XGrid = 'off';
+%     ax.YGrid = 'on';
+%     lineH.DisplayName = '';
+%     lineH.HandleVisibility = 'off';
 
 
     
@@ -79,7 +81,7 @@ stdTx = [stdCenTx ; stdDisTx];
 figure(plotLog+2);
 
 numChannelScale = size(simSesult, 1)/runtimes;
-SchemesNum = 2;
+SchemesNum = 3;
 
 % --- centralized capacity
 cenCapacity = simSesult(:, 2*n+1:3*n);
@@ -102,15 +104,20 @@ for i = 1:numChannelScale
 end
 
 % ---greedy Tx algorithm
-greedyCap = simSesult(1:runtimes, 5*n+1 : 6*n);
-averageCap_greedy_allRuns = mean(greedyCap, 2);
-meanGreedyCap = mean(averageCap_greedy_allRuns);
-stdGreedyCap = 1.96*std(averageCap_greedy_allRuns',1,2)/sqrt(n);
+greedyCapacity = simSesult(:, 5*n+1 : 6*n);
+meangreedyCapacity = zeros(1, numChannelScale);
+stdgreedyCapacity = zeros(1, numChannelScale);
+for i = 1:numChannelScale
+    averageThR_ET = mean(greedyCapacity((i-1)*runtimes+1:i*runtimes, :), 2);
+    meangreedyCapacity(i) = mean(averageThR_ET);
+    stdgreedyCapacity(i) = 1.96*std(averageThR_ET',1,2)/sqrt(n);
+end
+%---
 
-meanCapacity = [meanCenCapacity ; meanDisCapacity];
-stdCapacity = [stdCenCapacity ; stdDisCapacity];
+meanCapacity = [meanCenCapacity ; meanDisCapacity; meangreedyCapacity];
+stdCapacity = [stdCenCapacity ; stdDisCapacity; stdgreedyCapacity];
 
-    h = gobjects(SchemesNum + 1, 1);
+    h = gobjects(SchemesNum, 1);
     for i = 1: SchemesNum
         x = xstick(1)+0.03*(i-1): 1 : xstick(end)+0.03*(i-1);
         y = meanCapacity(i, :);
@@ -118,10 +125,7 @@ stdCapacity = [stdCenCapacity ; stdDisCapacity];
         h(i) = errorbar(x,y,err, '', '-o');
         hold on;
     end
-    x = xstick(end) + 0.3;
-    y = meanGreedyCap;
-    err = stdGreedyCap;   
-    h(SchemesNum + 1) = errorbar(x,y,err, '', 'gs', 'MarkerEdgeColor','green','MarkerFaceColor','green');
+
     
     legend(h, {'Optimization', 'WhiteCat', 'Greedy Algo.'}, 'Location','northwest', 'FontSize', 16, 'Color', 'w', 'Box', 'on', 'EdgeColor', 'none');
     xticks(xstick);
@@ -129,25 +133,18 @@ stdCapacity = [stdCenCapacity ; stdDisCapacity];
     xlabel('Number of Channels for Transmission');
     ylabel('Avg. Shannon Capacity on End Terminals (bits/s)');
     set(gca,'FontSize',16);
-    
-    yl = ylim;
-    lineH = line([xstick(end)+0.2 xstick(end)+0.2],yl,'Color',[0.9290, 0.6940, 0.1250], 'Linestyle', '--');
-    ax = gca;
-    ax.XGrid = 'off';
-    ax.YGrid = 'on';
-    lineH.DisplayName = '';
-    lineH.HandleVisibility = 'off';
+
 
 
 %% Average Tx ratios of every WBS
 figure(plotLog + 3);
 
 numChannelScale = xstick(end) - xstick(1) + 1;
-SchemesNum = 2;
+SchemesNum = 3;
 averageThR_ET_allWBSs = zeros(numChannelScale, n); 
 std_ET_allWBSs = zeros(numChannelScale, n); 
-metaDataTxMean = zeros(n, (SchemesNum+1)*numChannelScale); % (scheme1, s2, s3)_w1, (scheme1, s2, s3)_w2 ...
-metaDataTxStd = zeros(n, (SchemesNum+1)*numChannelScale);
+metaDataTxMean = zeros(n, (SchemesNum)*numChannelScale); % (scheme1, s2, s3)_w1, (scheme1, s2, s3)_w2 ...
+metaDataTxStd = zeros(n, (SchemesNum)*numChannelScale);
 
 % --- centralized Tx power
 cenTx = simSesult(:, 1:n);
@@ -155,8 +152,8 @@ cenTx = simSesult(:, 1:n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(cenTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(cenTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+1) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+1) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+1) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+1) = std_ET_allWBSs(i, :)';
 end
 
 % --- distributed Tx power
@@ -165,8 +162,8 @@ disTx = simSesult(:, n+1:2*n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(disTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(disTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+2) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+2) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+2) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+2) = std_ET_allWBSs(i, :)';
 end
 
 
@@ -176,13 +173,13 @@ greedyTx = simSesult(:, 4*n+1 : 5*n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(greedyTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(greedyTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+3) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+3) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+3) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+3) = std_ET_allWBSs(i, :)';
 end
 
 
 
-h = linkaxis(metaDataTxMean, metaDataTxStd, n, SchemesNum+1); % numChannelScale = 4
+h = linkaxis(metaDataTxMean, metaDataTxStd, n, SchemesNum); % numChannelScale = 4
 set([h(1).XLabel],'string','Index of WBSs');
 set([h(3).YLabel],'string','Avg. Tx Power per WBS (Watts)');
 
@@ -191,15 +188,14 @@ set([h(3).YLabel],'string','Avg. Tx Power per WBS (Watts)');
     %% capacities of every WBS
 figure(plotLog + 4);
 
-numChannelScale = size(simSesult, 1)/runtimes;
-SchemesNum = 2;
+
 
 numChannelScale = xstick(end) - xstick(1) + 1;
-SchemesNum = 2;
+SchemesNum = 3;
 averageThR_ET_allWBSs = zeros(numChannelScale, n); 
 std_ET_allWBSs = zeros(numChannelScale, n); 
-metaDataTxMean = zeros(n, (SchemesNum+1)*numChannelScale); % (scheme1, s2, s3)_w1, (scheme1, s2, s3)_w2 ...
-metaDataTxStd = zeros(n, (SchemesNum+1)*numChannelScale);
+metaDataTxMean = zeros(n, (SchemesNum)*numChannelScale); % (scheme1, s2, s3)_w1, (scheme1, s2, s3)_w2 ...
+metaDataTxStd = zeros(n, (SchemesNum)*numChannelScale);
 
 % --- centralized capacities
 cenTx = simSesult(:, 2*n+1:3*n);
@@ -207,8 +203,8 @@ cenTx = simSesult(:, 2*n+1:3*n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(cenTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(cenTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+1) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+1) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+1) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+1) = std_ET_allWBSs(i, :)';
 end
 
 % --- distributed capacities
@@ -217,8 +213,8 @@ disTx = simSesult(:, 3*n+1:4*n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(disTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(disTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+2) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+2) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+2) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+2) = std_ET_allWBSs(i, :)';
 end
 
 
@@ -228,12 +224,12 @@ greedyTx = simSesult(:, 5*n+1 : 6*n);
 for i = 1:numChannelScale
     averageThR_ET_allWBSs(i, :) = mean(greedyTx((i-1)*runtimes+1:i*runtimes, :), 1);
     std_ET_allWBSs(i, :) = (1.96*std(greedyTx((i-1)*runtimes+1:i*runtimes, :),1,1)/sqrt(runtimes));
-    metaDataTxMean(:, (i-1)*(SchemesNum+1)+3) = averageThR_ET_allWBSs(i, :)';
-    metaDataTxStd(:, (i-1)*(SchemesNum+1)+3) = std_ET_allWBSs(i, :)';
+    metaDataTxMean(:, (i-1)*(SchemesNum)+3) = averageThR_ET_allWBSs(i, :)';
+    metaDataTxStd(:, (i-1)*(SchemesNum)+3) = std_ET_allWBSs(i, :)';
 end
 
 
 
-h = linkaxis(metaDataTxMean, metaDataTxStd, n, SchemesNum+1); % numChannelScale = 4
+h = linkaxis(metaDataTxMean, metaDataTxStd, n, SchemesNum); % numChannelScale = 4
 set([h(1).XLabel],'string','Index of WBSs');
 set([h(3).YLabel],'string', 'Avg. Shannon Capacity on End Terminals (bits/s)');
