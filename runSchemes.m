@@ -107,7 +107,7 @@ end
 
 
             for i = 1: n
-                [B, updateFlag] =  s(seq(i), w, B, P_CVX, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta);
+                [B, updateFlag] =  update(seq(i), w, B, P_CVX, Gtilde, m, GtildeAll, TVpower, delta, SUcellRadius, pathlossfactor, eta);
                 numUpdatedWBSs = numUpdatedWBSs + updateFlag;
                 
 %                 if(updateFlag)  % there is a update
