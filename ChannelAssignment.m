@@ -187,3 +187,8 @@ ECCMultipleChannelPlots(0, n, simSesult, runtimes, xstick);
 %% plot averageDataOverNumOfChannels and averageDataOverNumOfChannels
 
     toc;
+
+    
+    
+    
+    
