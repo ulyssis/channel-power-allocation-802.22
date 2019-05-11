@@ -40,7 +40,7 @@ addpath("/Library/gurobi801/mac64/matlab");
 gurobi_setup;
 savepath;
 
-    runtimes =  30;  % number of simulation run
+    runtimes =  10;  % number of simulation run
     n = 9;    % number of WBS
     c = 4;
     maxNumMultiChannel = 4;     % maximal number of channels allowed to be used 
@@ -63,6 +63,10 @@ savepath;
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
     runSchemesForECC = 1;
+    
+    %to see the performance of the schemes when Tx is constant
+    DoPerformanceVerficiation = 1;
+    constantTx = 4;
     
     tic;
     
@@ -137,7 +141,10 @@ for w = xstick
             end
             cvx=sum(P_CVX,2);
             cvx_container = [cvx_container, cvx];
-    
+            
+            if(DoPerformanceVerficiation)
+                P_CVX = (P_CVX~= 0)*constantTx;
+            end
                 % plot the distibution of stations and nodes
             plotlocation(n, m, lengthSide, posSU, posET, posTVContor);
  
