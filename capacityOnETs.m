@@ -92,7 +92,7 @@ function [averageShannonCPerCell] = capacityOnETs(B, n, w, GtildeETsSUs, nET, de
 %     %-------
     % The aggregated Shannon capacity on the ETs.
     T(isnan(T))=0;
-    SC = mean(T, 2);
+    SC = mean(T, 2)/n;
     
     % average Shannon capacity per cell:
     averageShannonCPerCell = zeros(1, n);
