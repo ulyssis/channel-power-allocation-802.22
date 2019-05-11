@@ -47,9 +47,10 @@ savepath;
     minNumMultiChannel = 1;     % minimal number of channels allowed to be used 
     delta = 1*10.^(-13);   % Noise;untitled.eps
     lengthSide = 60000;
-    % n=16->  5*10.^(-8);
-    % n=9->  1*10.^(-8);
-    infBound = 1*10.^(-8);     % The interfernce threshold on PU contour  
+
+    infBound = 1*10.^(-8);         % n=16->  infBound=5*10.^(-8);
+                                    % n=9->  infBound=1*10.^(-8);
+                                    % The interfernce threshold on PU contour  
     
     TVpower = 0;
     pathlossfactor = 2;    
@@ -62,6 +63,7 @@ savepath;
     eta= 1; % the discount of the sum of interference from different WBSs, to represent the interference on the measurement point 
 
     runSchemesForECC = 1;
+    
     tic;
     
 averagePowerOverNumOfChannels = [];
@@ -69,8 +71,8 @@ averagePowerCIOverNumOfChannels = [];
 averageETSINROverNumOfChannels = [];
 averageETSINRCIOverNumOfChannels = [];
 
-
-    decentralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
+    % Performance in each cell, over all runs.
+    decentralized_TxPower_allWBSs_allRuns = zeros(runtimes, n); 
     centralized_TxPower_allWBSs_allRuns = zeros(runtimes, n);
     dyspan14_TxPower_allWBSs_allRuns  = zeros(runtimes, n);
     decentralized_CellThrought_allWBSs_allRuns = zeros(runtimes, n);
