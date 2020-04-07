@@ -1,3 +1,5 @@
-The codes are for the implementation of the following paper:
+- The codes are for the implementation of the following paper:
+  Di Li and James Gross, Distributed TV Spectrum Allocation for Cognitive Cellular Network under Game Theoretical Framework Proc. of the IEEE Symposium on New Frontiers in Dynamic Spectrum Access Networks (DySPAN'12) 2012
 
-Di Li and James Gross, Distributed TV Spectrum Allocation for Cognitive Cellular Network under Game Theoretical Framework Proc. of the IEEE Symposium on New Frontiers in Dynamic Spectrum Access Networks (DySPAN'12) 2012
+- All schemes are run from ChannelAssignment.m
+  The proposed scheme, along with the comparison schemes, are run with the same network.
